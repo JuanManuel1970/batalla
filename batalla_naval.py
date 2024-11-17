@@ -212,6 +212,8 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     corriendo = True
+    casillas_clicadas = 0
+    total_casillas = tamano_matriz * tamano_matriz 
 
     while corriendo:
         for evento in pygame.event.get():
@@ -224,7 +226,8 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                 # Detectar clic en el tablero
                 fila, columna = y // tamano_celda, x // tamano_celda
                 if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz:
-                    if intentos[fila][columna] == 0:  # Solo registrar si no ha sido clicado antes
+                    if intentos[fila][columna] == 0:
+                        casillas_clicadas += 1   # Solo registrar si no ha sido clicado antes
                         if matriz[fila][columna] == 1:  # Acierto
                             intentos[fila][columna] = 1
                             puntaje += 5
@@ -249,6 +252,11 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                 elif 600 <= x <= 750 and 440 <= y <= 490:  # Salir
                     pygame.quit()
                     sys.exit()
+
+                    
+        if not coordenadas_naves or casillas_clicadas == total_casillas:
+            print("Juego Terminado!")
+            corriendo = False  # Terminar el juego
 
         pantalla.fill(BLANCO)
         mostrar_puntaje(puntaje) 
@@ -302,47 +310,6 @@ def poner_naves(matriz, naves):
                             colocada = True  # Nave colocada con éxito
 
     return coordenadas_naves
-
-
-        # Función auxiliar para verificar si la nave cabe y no se solapan
-    def verificar_posicion(fila, columna, longitud, direccion):
-        if direccion == 'horizontal':
-            if columna + longitud > tamano_matriz:  # Verificar si la nave cabe en el tablero horizontalmente
-                return False
-            # Verificar si las celdas están vacías
-            for i in range(longitud):
-                if matriz[fila][columna + i] != 0:
-                    return False
-        elif direccion == 'vertical':
-            if fila + longitud > tamano_matriz:  # Verificar si la nave cabe en el tablero verticalmente
-                return False
-            # Verificar si las celdas están vacías
-            for i in range(longitud):
-                if matriz[fila + i][columna] != 0:
-                    return False
-        return True
-
-    # Función auxiliar para colocar la nave en la matriz
-    def colocar_nave(fila, columna, longitud, direccion):
-        if direccion == 'horizontal':
-            for i in range(longitud):
-                matriz[fila][columna + i] = 1  # Marcar la celda como ocupada
-        elif direccion == 'vertical':
-            for i in range(longitud):
-                matriz[fila + i][columna] = 1  # Marcar la celda como ocupada
-
-    # Colocar las naves en el tablero
-    for tipo, longitud, cantidad in naves:
-        for _ in range(cantidad):
-            nave_colocada = False
-            while not nave_colocada:
-                fila = random.randint(0, tamano_matriz - 1)
-                columna = random.randint(0, tamano_matriz - 1)
-                direccion = random.choice(['horizontal', 'vertical'])
-                
-                if verificar_posicion(fila, columna, longitud, direccion):
-                    colocar_nave(fila, columna, longitud, direccion)
-                    nave_colocada = True
 
 
 def dibujar_tablero(matriz, intentos, tamano_matriz):
