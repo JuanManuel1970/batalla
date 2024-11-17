@@ -72,7 +72,57 @@ def mostrar_puntaje(puntaje):
     fuente = pygame.font.SysFont("Arial", 36)  # Fuente y tamaño del texto
     texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO)  # Formato 0000
     pantalla.blit(texto, (600, 10))  # Dibuja el texto en la esquina superior izquierda
-   
+
+# Función para guardar el puntaje en un archivo
+def guardar_puntaje(nombre, puntaje):
+    with open("puntajes.txt", "a") as archivo:
+        archivo.write(f"{nombre},{puntaje}\n")
+
+# Función para pedir el nombre del jugador
+def pedir_nombre(puntaje):
+    fuente = pygame.font.SysFont("Arial", 30)
+    input_box = pygame.Rect(250, 300, 200, 40)
+    color_inactive = pygame.Color("lightskyblue3")
+    color_active = pygame.Color("dodgerblue2")
+    color = color_inactive
+    active = False
+    text = ''
+    clock = pygame.time.Clock()
+    pantalla.fill((255, 255, 255))
+
+    texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
+    pantalla.blit(texto_puntaje, (250, 250))
+
+    while True:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                if input_box.collidepoint(evento.pos):
+                    active = not active
+                else:
+                    active = False
+                color = color_active if active else color_inactive
+            if evento.type == pygame.KEYDOWN:
+                if active:
+                    if evento.key == pygame.K_RETURN:
+                        return text
+                    elif evento.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                    else:
+                        text += evento.unicode
+
+        pygame.draw.rect(pantalla, color, input_box, 2)
+        texto_nombre = fuente.render(text, True, (0, 0, 0))
+        pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
+
+        pygame.display.flip()
+        clock.tick(30)
+
+# Función para reiniciar el juego
+def reiniciar_juego(tamano_matriz, nivel):
+    iniciar_juego(tamano_matriz, nivel)
 
 # Función para mostrar la pantalla de inicio
 def pantalla_inicio():
@@ -157,7 +207,7 @@ def pantalla_seleccion_nivel():
                     iniciar_juego(40, nivel="difícil")  # Llamar a la función para iniciar el juego con tablero de 40x40
                     corriendo = False
         
-        pygame.display.flip()  # Actualizar la pantalla
+        pygame.display.flip()  
  
 # Función para mostrar la pantalla de puntajes
 def pantalla_puntajes():
@@ -165,10 +215,30 @@ def pantalla_puntajes():
     while corriendo:
         pantalla.fill(BLANCO)
         mostrar_texto("Puntajes", NEGRO, 300, 50)
-        
-        # Aquí podrías cargar y mostrar los puntajes desde un archivo o variable
-        mostrar_texto("Puntaje Máximo: 0000", NEGRO, 300, 150)
-        
+
+        # Leer los puntajes desde el archivo puntajes.txt
+        try:
+            with open("puntajes.txt", "r") as archivo:
+                puntajes = archivo.readlines()
+
+            # Filtrar las líneas vacías y asegurarse de que cada línea tenga el formato correcto
+            puntajes = [linea.strip() for linea in puntajes if linea.strip()]
+            puntajes = [linea.split(",") for linea in puntajes if len(linea.split(",")) == 2]
+
+            # Convertir los puntajes en una lista de tuplas (nombre, puntaje)
+            puntajes = [(nombre, int(puntaje)) for nombre, puntaje in puntajes]  # Convertir los puntajes a enteros
+
+            # Ordenar los puntajes de mayor a menor
+            puntajes.sort(key=lambda x: x[1], reverse=True)
+
+            # Mostrar los tres mejores puntajes
+            for i, (nombre, puntos) in enumerate(puntajes[:3]):
+                mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 300, 150 + i * 30)  # Mostrar solo los 3 mejores
+
+        except FileNotFoundError:
+            # Si el archivo no existe, mostramos un mensaje
+            mostrar_texto("No hay puntajes guardados", NEGRO, 300, 150)
+
         # Dibujar botón para regresar al menú
         dibujar_boton("Volver", 300, 360, 200, 50, (200, 200, 0), NEGRO)
 
@@ -185,11 +255,12 @@ def pantalla_puntajes():
 
 
 
+
 # Definir la función crear_matriz para crear un tablero de tamaño tamano_matriz x tamano_matriz
 def crear_matriz(tamano_matriz):
     return [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
 
-# El resto de tu código sigue igual...
+
 
 
 def iniciar_juego(tamano_matriz, nivel="fácil"):
@@ -213,7 +284,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     corriendo = True
     casillas_clicadas = 0
-    total_casillas = tamano_matriz * tamano_matriz 
+    total_casillas = tamano_matriz * tamano_matriz  # Número total de casillas en el tablero
 
     while corriendo:
         for evento in pygame.event.get():
@@ -226,8 +297,9 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                 # Detectar clic en el tablero
                 fila, columna = y // tamano_celda, x // tamano_celda
                 if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz:
-                    if intentos[fila][columna] == 0:
-                        casillas_clicadas += 1   # Solo registrar si no ha sido clicado antes
+                    if intentos[fila][columna] == 0:  # Solo registrar si no ha sido clicado antes
+                        casillas_clicadas += 1  # Contar las casillas clicadas
+
                         if matriz[fila][columna] == 1:  # Acierto
                             intentos[fila][columna] = 1
                             puntaje += 5
@@ -245,18 +317,20 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                             intentos[fila][columna] = -1
                             puntaje -= 1
                             print(f"Fallo en ({fila}, {columna})")
-                
+
                 # Detectar clic en botones
                 if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
-                    iniciar_juego(tamano_matriz, nivel)
+                    reiniciar_juego(tamano_matriz, nivel)
                 elif 600 <= x <= 750 and 440 <= y <= 490:  # Salir
                     pygame.quit()
                     sys.exit()
 
-                    
+        # Comprobar si todos los barcos han sido hundidos o si se han clicado todas las casillas
         if not coordenadas_naves or casillas_clicadas == total_casillas:
             print("Juego Terminado!")
-            corriendo = False  # Terminar el juego
+            nombre = pedir_nombre(puntaje)  # Pedir el nombre del jugador
+            guardar_puntaje(nombre, puntaje)  # Guardar el puntaje en el archivo
+            reiniciar_juego(tamano_matriz, nivel)  # Reiniciar el juego
 
         pantalla.fill(BLANCO)
         mostrar_puntaje(puntaje) 
