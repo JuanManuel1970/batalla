@@ -37,6 +37,7 @@ pygame.init()
 # Definir el tamaño de la pantalla
 ANCHO = 800
 ALTO = 600
+tamano_celda = 30
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Batalla Naval")
 
@@ -53,6 +54,7 @@ fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 fondo_nivel = pygame.image.load('fondo1.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
 fondo_nivel = pygame.transform.scale(fondo, (ANCHO, ALTO))
+
 
 # Función para mostrar un texto en la pantalla
 def mostrar_texto(texto, color, x, y):
@@ -168,17 +170,74 @@ def iniciar_juego(tamano_matriz):
 
 # Función para crear la matriz de 10x10
 def crear_matriz(tamano_matriz):
+    # Creamos una matriz de tamaño dinámico con todas las celdas inicializadas en 0 (agua)
     matriz = [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
     return matriz
 
-# Función para dibujar el tablero
+# Función para colocar las naves de forma aleatoria en el tablero
+def poner_naves(matriz):
+    tamano_matriz = len(matriz)
+
+    # Definir la cantidad de cada tipo de nave y su tamaño (submarino: 1, destructor: 2, crucero: 3, acorazado: 4)
+    tipos_naves = {
+        "submarino": 1,   # 4 submarinos de 1 casillero
+        "destructor": 2,   # 3 destructores de 2 casilleros
+        "crucero": 3,      # 2 cruceros de 3 casilleros
+        "acorazado": 4     # 1 acorazado de 4 casilleros
+    }
+
+ # Función auxiliar para verificar si la nave cabe en la matriz y no se solapa
+    def verificar_posicion(fila, columna, longitud, direccion):
+        if direccion == 'horizontal':
+            if columna + longitud > tamano_matriz:  # Verificar si la nave cabe en el tablero horizontalmente
+                return False
+            # Verificar si las celdas están vacías
+            for i in range(longitud):
+                if matriz[fila][columna + i] != 0:
+                    return False
+        elif direccion == 'vertical':
+            if fila + longitud > tamano_matriz:  # Verificar si la nave cabe en el tablero verticalmente
+                return False
+            # Verificar si las celdas están vacías
+            for i in range(longitud):
+                if matriz[fila + i][columna] != 0:
+                    return False
+        return True
+
+    # Función auxiliar para colocar una nave en la matriz
+    def colocar_nave(fila, columna, longitud, direccion):
+        if direccion == 'horizontal':
+            for i in range(longitud):
+                matriz[fila][columna + i] = 1  # Marcar cada celda como ocupada por la nave
+        elif direccion == 'vertical':
+            for i in range(longitud):
+                matriz[fila + i][columna] = 1  # Marcar cada celda como ocupada por la nave
+
+    # Colocar las naves de forma aleatoria
+    for tipo, longitud in tipos_naves.items():
+        cantidad = 0
+
+        # Colocar naves según el tipo
+        while cantidad < (4 if tipo == "submarino" else (3 if tipo == "destructor" else (2 if tipo == "crucero" else 1))):
+            fila = random.randint(0, tamano_matriz - 1)
+            columna = random.randint(0, tamano_matriz - 1)
+            direccion = random.choice(['horizontal', 'vertical'])
+
+            # Verificar si la nave cabe en la posición aleatoria
+            if verificar_posicion(fila, columna, longitud, direccion):
+                colocar_nave(fila, columna, longitud, direccion)
+                cantidad += 1
+
 def dibujar_tablero(matriz, tamano_matriz):
-    tamano_celda = ANCHO // tamano_matriz  # Calcular el tamaño de cada celda
+    # Calculamos el tamaño máximo de la celda para que se ajuste a la pantalla
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz  # Esto asegura que las celdas no excedan el tamaño de la pantalla
     for fila in range(tamano_matriz):
         for columna in range(tamano_matriz):
             color = BLANCO if matriz[fila][columna] == 0 else (0, 200, 0)  # Si no hay nave, dibuja blanco; si hay nave, verde
             pygame.draw.rect(pantalla, color, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda))
             pygame.draw.rect(pantalla, NEGRO, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda), 2)  # Dibujar bordes de las celdas
+
+
 
 # Función para colocar las naves de forma aleatoria en el tablero
 def poner_naves(matriz):
