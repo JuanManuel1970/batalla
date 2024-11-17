@@ -162,59 +162,48 @@ def crear_matriz(tamano_matriz):
 def iniciar_juego(tamano_matriz, nivel="fácil"):
     print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
     matriz = crear_matriz(tamano_matriz)
-    
-    # Cambiar la cantidad de naves según el nivel
+    intentos = crear_matriz(tamano_matriz)  # Matriz para registrar los intentos del jugador (-1: fallo, 1: acierto)
+
+    # Configurar las naves según el nivel
     if nivel == "medio":
-        # Duplicamos las naves para el nivel medio
-        naves = [
-            ("acorazado", 4, 2),  # 2 acorazados de 4 casilleros
-            ("crucero", 3, 4),    # 4 cruceros de 3 casilleros
-            ("destructor", 2, 6), # 6 destructores de 2 casilleros
-            ("submarino", 1, 8)   # 8 submarinos de 1 casillero
-        ]
+        naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
     elif nivel == "difícil":
-        # Triplicamos las naves para el nivel difícil
-        naves = [
-            ("acorazado", 4, 3),  # 3 acorazados de 4 casilleros
-            ("crucero", 3, 6),    # 6 cruceros de 3 casilleros
-            ("destructor", 2, 9), # 9 destructores de 2 casilleros
-            ("submarino", 1, 12)  # 12 submarinos de 1 casillero
-        ]
+        naves = [("acorazado", 4, 3), ("crucero", 3, 6), ("destructor", 2, 9), ("submarino", 1, 12)]
     else:
-        # Nivel fácil (por defecto)
-        naves = [
-            ("acorazado", 4, 1),  # 1 acorazado de 4 casilleros
-            ("crucero", 3, 2),    # 2 cruceros de 3 casilleros
-            ("destructor", 2, 3), # 3 destructores de 2 casilleros
-            ("submarino", 1, 4)   # 4 submarinos de 1 casillero
-        ]
-    
+        naves = [("acorazado", 4, 1), ("crucero", 3, 2), ("destructor", 2, 3), ("submarino", 1, 4)]
+
     poner_naves(matriz, naves)
-    tamano_matriz = len(matriz)
-    # Bucle principal del juego
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     corriendo = True
+
     while corriendo:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-                # Detectar si se hizo clic en el botón "Reiniciar"
-            # Detectar si se hizo clic en el botón "Reiniciar"
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                # Verificar si se hizo clic en el botón de reiniciar
-                if 600 <= x <= 750 and 500 <= y <= 550:  # Coordenadas para "Reiniciar"
-                    print("Reiniciando el juego")
-                    iniciar_juego(tamano_matriz, nivel)  # Llamar nuevamente a la función para reiniciar el juego
-                # Verificar si se hizo clic en el botón de salir
-                elif 600 <= x <= 750 and 440 <= y <= 490:  # Coordenadas para "Salir"
-                    print("Saliendo del juego")
+
+                # Detectar clic en el tablero
+                fila, columna = y // tamano_celda, x // tamano_celda
+                if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz:
+                    if intentos[fila][columna] == 0:  # Solo registrar si no ha sido clicado antes
+                        if matriz[fila][columna] == 1:  # Acierto
+                            intentos[fila][columna] = 1
+                            print(f"Acierto en ({fila}, {columna})")
+                        else:  # Fallo
+                            intentos[fila][columna] = -1
+                            print(f"Fallo en ({fila}, {columna})")
+
+                # Detectar clic en botones
+                if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
+                    iniciar_juego(tamano_matriz, nivel)
+                elif 600 <= x <= 750 and 440 <= y <= 490:  # Salir
                     pygame.quit()
                     sys.exit()
 
-        # Dibujar el tablero
         pantalla.fill(BLANCO)
-        dibujar_tablero(matriz, tamano_matriz)
+        dibujar_tablero(matriz, intentos, tamano_matriz)
         dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)
         dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)
         pygame.display.flip()
@@ -267,14 +256,26 @@ def poner_naves(matriz, naves):
                     nave_colocada = True
 
 
-def dibujar_tablero(matriz, tamano_matriz):
-    # Calculamos el tamaño máximo de la celda para que se ajuste a la pantalla
-    tamano_celda = min(ANCHO, ALTO) // tamano_matriz  # Esto asegura que las celdas no excedan el tamaño de la pantalla
+def dibujar_tablero(matriz, intentos, tamano_matriz):
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     for fila in range(tamano_matriz):
         for columna in range(tamano_matriz):
-            color = BLANCO if matriz[fila][columna] == 0 else (0, 200, 0)  # Si no hay nave, dibuja blanco; si hay nave, verde
+            color = BLANCO if matriz[fila][columna] == 0 else (0, 200, 0)
             pygame.draw.rect(pantalla, color, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda))
-            pygame.draw.rect(pantalla, NEGRO, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda), 2)  # Dibujar bordes de las celdas
+            pygame.draw.rect(pantalla, NEGRO, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda), 2)
+
+            # Dibujar marcas según los intentos
+            if intentos[fila][columna] == 1:  # Acierto
+                pygame.draw.line(pantalla, (255, 0, 0), 
+                                 (columna * tamano_celda, fila * tamano_celda),
+                                 ((columna + 1) * tamano_celda, (fila + 1) * tamano_celda), 3)
+                pygame.draw.line(pantalla, (255, 0, 0), 
+                                 ((columna + 1) * tamano_celda, fila * tamano_celda),
+                                 (columna * tamano_celda, (fila + 1) * tamano_celda), 3)
+            elif intentos[fila][columna] == -1:  # Fallo
+                pygame.draw.circle(pantalla, (0, 0, 255), 
+                                   (columna * tamano_celda + tamano_celda // 2, 
+                                    fila * tamano_celda + tamano_celda // 2), tamano_celda // 3, 2)
 
 
 
