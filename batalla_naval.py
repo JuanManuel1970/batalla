@@ -175,7 +175,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
     matriz = crear_matriz(tamano_matriz)
     intentos = crear_matriz(tamano_matriz)  # Matriz para registrar los intentos del jugador (-1: fallo, 1: acierto)
-
+    puntaje = 0
     # Configurar las naves según el nivel
     if nivel == "medio":
         naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
@@ -202,10 +202,12 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                     if intentos[fila][columna] == 0:  # Solo registrar si no ha sido clicado antes
                         if matriz[fila][columna] == 1:  # Acierto
                             intentos[fila][columna] = 1
-                            print(f"Acierto en ({fila}, {columna})")
+                            puntaje += 5
+                           
                         else:  # Fallo
                             intentos[fila][columna] = -1
-                            print(f"Fallo en ({fila}, {columna})")
+                            puntaje -= 1
+                           
 
                 # Detectar clic en botones
                 if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
