@@ -53,7 +53,7 @@ fondo = pygame.image.load('fondo.jpg')  # Asegúrate de tener una imagen llamada
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 fondo_nivel = pygame.image.load('fondo1.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
-fondo_nivel = pygame.transform.scale(fondo, (ANCHO, ALTO))
+
 
 
 # Función para mostrar un texto en la pantalla
@@ -65,6 +65,8 @@ def mostrar_texto(texto, color, x, y):
 def dibujar_boton(texto, x, y, ancho, alto, color_boton, color_texto):
     pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
     mostrar_texto(texto, color_texto, x + 20, y + 20)  # Ajuste de posición del texto en el botón
+
+
 
 # Función para mostrar la pantalla de inicio
 def pantalla_inicio():
@@ -103,7 +105,7 @@ def pantalla_inicio():
                     sys.exit()
         
         pygame.display.flip()  # Actualizar la pantalla
-        pygame.time.Clock().tick(60)  # 60 FPS
+      
 
 # Función para mostrar la pantalla de selección de nivel
 def pantalla_seleccion_nivel():
@@ -135,26 +137,60 @@ def pantalla_seleccion_nivel():
                 # Verificar si se hizo clic en algún botón de nivel
                 if 300 <= x <= 500 and 150 <= y <= 200:  # Botón "Fácil"
                     print("Nivel Fácil seleccionado")
-                    iniciar_juego(10)  # Llamar a la función para iniciar el juego con tablero de 10x10
+                    iniciar_juego(10, nivel="fácil")  # Llamar a la función para iniciar el juego con tablero de 10x10
                     corriendo = False
                 elif 300 <= x <= 500 and 220 <= y <= 270:  # Botón "Medio"
                     print("Nivel Medio seleccionado")
-                    iniciar_juego(20)  # Llamar a la función para iniciar el juego con tablero de 20x20
+                    iniciar_juego(20, nivel="medio")  # Llamar a la función para iniciar el juego con tablero de 20x20
                     corriendo = False
                 elif 300 <= x <= 500 and 290 <= y <= 340:  # Botón "Difícil"
                     print("Nivel Difícil seleccionado")
-                    iniciar_juego(40)  # Llamar a la función para iniciar el juego con tablero de 40x40
+                    iniciar_juego(40, nivel="difícil")  # Llamar a la función para iniciar el juego con tablero de 40x40
                     corriendo = False
         
         pygame.display.flip()  # Actualizar la pantalla
+ 
 
 
-# Función para iniciar el juego con el tamaño de la matriz
-def iniciar_juego(tamano_matriz):
-    print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz}")
+# Definir la función crear_matriz para crear un tablero de tamaño tamano_matriz x tamano_matriz
+def crear_matriz(tamano_matriz):
+    return [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
+
+# El resto de tu código sigue igual...
+
+
+def iniciar_juego(tamano_matriz, nivel="fácil"):
+    print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
     matriz = crear_matriz(tamano_matriz)
-    poner_naves(matriz)
     
+    # Cambiar la cantidad de naves según el nivel
+    if nivel == "medio":
+        # Duplicamos las naves para el nivel medio
+        naves = [
+            ("acorazado", 4, 2),  # 2 acorazados de 4 casilleros
+            ("crucero", 3, 4),    # 4 cruceros de 3 casilleros
+            ("destructor", 2, 6), # 6 destructores de 2 casilleros
+            ("submarino", 1, 8)   # 8 submarinos de 1 casillero
+        ]
+    elif nivel == "difícil":
+        # Triplicamos las naves para el nivel difícil
+        naves = [
+            ("acorazado", 4, 3),  # 3 acorazados de 4 casilleros
+            ("crucero", 3, 6),    # 6 cruceros de 3 casilleros
+            ("destructor", 2, 9), # 9 destructores de 2 casilleros
+            ("submarino", 1, 12)  # 12 submarinos de 1 casillero
+        ]
+    else:
+        # Nivel fácil (por defecto)
+        naves = [
+            ("acorazado", 4, 1),  # 1 acorazado de 4 casilleros
+            ("crucero", 3, 2),    # 2 cruceros de 3 casilleros
+            ("destructor", 2, 3), # 3 destructores de 2 casilleros
+            ("submarino", 1, 4)   # 4 submarinos de 1 casillero
+        ]
+    
+    poner_naves(matriz, naves)
+    tamano_matriz = len(matriz)
     # Bucle principal del juego
     corriendo = True
     while corriendo:
@@ -168,25 +204,14 @@ def iniciar_juego(tamano_matriz):
         dibujar_tablero(matriz, tamano_matriz)
         pygame.display.flip()
 
-# Función para crear la matriz de 10x10
-def crear_matriz(tamano_matriz):
-    # Creamos una matriz de tamaño dinámico con todas las celdas inicializadas en 0 (agua)
-    matriz = [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
-    return matriz
+
 
 # Función para colocar las naves de forma aleatoria en el tablero
-def poner_naves(matriz):
+def poner_naves(matriz, naves):
     tamano_matriz = len(matriz)
 
-    # Definir la cantidad de cada tipo de nave y su tamaño (submarino: 1, destructor: 2, crucero: 3, acorazado: 4)
-    tipos_naves = {
-        "submarino": 1,   # 4 submarinos de 1 casillero
-        "destructor": 2,   # 3 destructores de 2 casilleros
-        "crucero": 3,      # 2 cruceros de 3 casilleros
-        "acorazado": 4     # 1 acorazado de 4 casilleros
-    }
 
- # Función auxiliar para verificar si la nave cabe en la matriz y no se solapa
+        # Función auxiliar para verificar si la nave cabe y no se solapan
     def verificar_posicion(fila, columna, longitud, direccion):
         if direccion == 'horizontal':
             if columna + longitud > tamano_matriz:  # Verificar si la nave cabe en el tablero horizontalmente
@@ -204,29 +229,28 @@ def poner_naves(matriz):
                     return False
         return True
 
-    # Función auxiliar para colocar una nave en la matriz
+    # Función auxiliar para colocar la nave en la matriz
     def colocar_nave(fila, columna, longitud, direccion):
         if direccion == 'horizontal':
             for i in range(longitud):
-                matriz[fila][columna + i] = 1  # Marcar cada celda como ocupada por la nave
+                matriz[fila][columna + i] = 1  # Marcar la celda como ocupada
         elif direccion == 'vertical':
             for i in range(longitud):
-                matriz[fila + i][columna] = 1  # Marcar cada celda como ocupada por la nave
+                matriz[fila + i][columna] = 1  # Marcar la celda como ocupada
 
-    # Colocar las naves de forma aleatoria
-    for tipo, longitud in tipos_naves.items():
-        cantidad = 0
+    # Colocar las naves en el tablero
+    for tipo, longitud, cantidad in naves:
+        for _ in range(cantidad):
+            nave_colocada = False
+            while not nave_colocada:
+                fila = random.randint(0, tamano_matriz - 1)
+                columna = random.randint(0, tamano_matriz - 1)
+                direccion = random.choice(['horizontal', 'vertical'])
+                
+                if verificar_posicion(fila, columna, longitud, direccion):
+                    colocar_nave(fila, columna, longitud, direccion)
+                    nave_colocada = True
 
-        # Colocar naves según el tipo
-        while cantidad < (4 if tipo == "submarino" else (3 if tipo == "destructor" else (2 if tipo == "crucero" else 1))):
-            fila = random.randint(0, tamano_matriz - 1)
-            columna = random.randint(0, tamano_matriz - 1)
-            direccion = random.choice(['horizontal', 'vertical'])
-
-            # Verificar si la nave cabe en la posición aleatoria
-            if verificar_posicion(fila, columna, longitud, direccion):
-                colocar_nave(fila, columna, longitud, direccion)
-                cantidad += 1
 
 def dibujar_tablero(matriz, tamano_matriz):
     # Calculamos el tamaño máximo de la celda para que se ajuste a la pantalla
@@ -239,19 +263,7 @@ def dibujar_tablero(matriz, tamano_matriz):
 
 
 
-# Función para colocar las naves de forma aleatoria en el tablero
-def poner_naves(matriz):
-    tamano_matriz = len(matriz)
-    cantidad_naves = tamano_matriz  # Podemos ajustar este número según el nivel de dificultad
 
-    for _ in range(cantidad_naves):
-        fila = random.randint(0, tamano_matriz - 1)
-        columna = random.randint(0, tamano_matriz - 1)
-        # Verificar si ya hay una nave en esa posición
-        while matriz[fila][columna] == 1:
-            fila = random.randint(0, tamano_matriz - 1)
-            columna = random.randint(0, tamano_matriz - 1)
-        matriz[fila][columna] = 1  # Colocar nave en la posición aleatoria
 
 # Ejecutar la pantalla de inicio
 pantalla_inicio()
