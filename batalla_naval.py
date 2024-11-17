@@ -47,7 +47,7 @@ fuente = pygame.font.SysFont('Arial', 36)
 # Colores
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-
+puntaje = 0 
 # Cargar imagen de fondo
 fondo = pygame.image.load('fondo.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
@@ -66,19 +66,30 @@ def dibujar_boton(texto, x, y, ancho, alto, color_boton, color_texto):
     pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
     mostrar_texto(texto, color_texto, x + 20, y + 20)  # Ajuste de posición del texto en el botón
 
+def dibujar_puntaje(puntaje):
+    fuente = pygame.font.SysFont("Arial", 30)  # Define la fuente y el tamaño
+    texto = fuente.render(f"Puntaje: {puntaje:04d}", True, (255, 255, 255))  # Formato "0000"
+    pantalla.blit(texto, (10, 10))  # Dibuja el texto en la esquina superior izquierda
 
+def mostrar_puntaje(puntaje):
+    fuente = pygame.font.SysFont("Arial", 36)  # Fuente y tamaño del texto
+    texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO)  # Formato 0000
+    pantalla.blit(texto, (600, 10))  # Dibuja el texto en la esquina superior izquierda
+   
 
 # Función para mostrar la pantalla de inicio
 def pantalla_inicio():
+   
     while True:
         pantalla.blit(fondo, (0, 0))  # Mostrar el fondo
         mostrar_texto("Batalla Naval", NEGRO, 300, 50)  # Título de la pantalla
-        
+   
         # Dibujar botones
         dibujar_boton("Nivel",        300, 140, 200, 60, (150, 0, 200), BLANCO)
         dibujar_boton("Jugar",        300, 220, 200, 50, (0, 0, 200), BLANCO)
         dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 0, 0), BLANCO)
         dibujar_boton("Salir",        300, 360, 200, 50, (200, 200, 0), BLANCO)
+
         
         # Verificar eventos (clic en los botones)
         for evento in pygame.event.get():
@@ -103,6 +114,7 @@ def pantalla_inicio():
                 elif 300 <= x <= 500 and 360 <= y <= 410:  # Botón "Salir"
                     pygame.quit()
                     sys.exit()
+      
         
         pygame.display.flip()  # Actualizar la pantalla
       
@@ -203,6 +215,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                     sys.exit()
 
         pantalla.fill(BLANCO)
+        mostrar_puntaje(puntaje) 
         dibujar_tablero(matriz, intentos, tamano_matriz)
         dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)
         dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)
