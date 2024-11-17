@@ -75,10 +75,10 @@ def pantalla_inicio():
         mostrar_texto("Batalla Naval", NEGRO, 300, 50)  # Título de la pantalla
         
         # Dibujar botones
-        dibujar_boton("Nivel", 300, 150, 200, 50, (0, 200, 0), BLANCO)
-        dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
+        dibujar_boton("Nivel",        300, 140, 200, 60, (150, 0, 200), BLANCO)
+        dibujar_boton("Jugar",        300, 220, 200, 50, (0, 0, 200), BLANCO)
         dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 0, 0), BLANCO)
-        dibujar_boton("Salir", 300, 360, 200, 50, (200, 200, 0), BLANCO)
+        dibujar_boton("Salir",        300, 360, 200, 50, (200, 200, 0), BLANCO)
         
         # Verificar eventos (clic en los botones)
         for evento in pygame.event.get():
@@ -198,10 +198,25 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+                # Detectar si se hizo clic en el botón "Reiniciar"
+            # Detectar si se hizo clic en el botón "Reiniciar"
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                # Verificar si se hizo clic en el botón de reiniciar
+                if 600 <= x <= 750 and 500 <= y <= 550:  # Coordenadas para "Reiniciar"
+                    print("Reiniciando el juego")
+                    iniciar_juego(tamano_matriz, nivel)  # Llamar nuevamente a la función para reiniciar el juego
+                # Verificar si se hizo clic en el botón de salir
+                elif 600 <= x <= 750 and 440 <= y <= 490:  # Coordenadas para "Salir"
+                    print("Saliendo del juego")
+                    pygame.quit()
+                    sys.exit()
 
         # Dibujar el tablero
         pantalla.fill(BLANCO)
         dibujar_tablero(matriz, tamano_matriz)
+        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)
+        dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)
         pygame.display.flip()
 
 
