@@ -26,49 +26,20 @@
 # volver al menú principal. OPCIONALES:  Nivel de dificultad. ● Pantalla de inicio: agregar un (1) botón para activar / desactivar el sonido de fondo.  Al disparar: o Reproducir
 # un sonido de disparo acertado. o Reproducir un sonido de disparo errado.  Agregar imágenes, sonidos, y animaciones donde corresponda. 
 from funciones_batalla import *
-
+from configuracion_batalla import *
 import pygame
 import random
 import sys
 
-# Inicializar pygame
+
+
 pygame.init()
 
-# Definir el tamaño de la pantalla
-ANCHO = 800
-ALTO = 600
-tamano_celda = 30
-pantalla = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("Batalla Naval")
-pygame.mixer.init()
 
 # Fuentes
 fuente = pygame.font.SysFont('Arial', 36)
 music_on = True
-pygame.mixer.music.set_volume(0.15)
-# Colores
-BLANCO = (255, 255, 255)
-NEGRO = (0, 0, 0)
 puntaje = 0 
-# Cargar imagen de fondo
-fondo = pygame.image.load('imagenes/fondo.jpg')  
-fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
-
-fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
-
-
-
-
-# Cargar el sonido del acierto (asegúrate de que el archivo de sonido esté en la carpeta adecuada)
-sonido_acierto = pygame.mixer.Sound('sonidos/disparo.mp3')
-sonido_fallo = pygame.mixer.Sound('sonidos/agua.mp3')
-sonido_hundido = pygame.mixer.Sound('sonidos/hundido.mp3')
-
-# Cargar la música de fondo (asegúrate de que el archivo .mp3 esté en el mismo directorio o en la ruta correcta)
-pygame.mixer.music.load('sonidos/fondo.mp3')
-
-# Reproducir la música en bucle (-1 significa bucle infinito)
-pygame.mixer.music.play(-1, 0.0)
 
 # Función para mostrar un texto en la pantalla
 def mostrar_texto(texto, color, x, y):
