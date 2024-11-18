@@ -50,9 +50,10 @@ NEGRO = (0, 0, 0)
 puntaje = 0 
 # Cargar imagen de fondo
 fondo = pygame.image.load('fondo.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
+fondo_nivel = pygame.image.load('fondo1.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
+fondo_nivel = pygame.image.load('fondo2.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
-fondo_nivel = pygame.image.load('fondo1.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
 
 
 
@@ -135,8 +136,8 @@ def pantalla_inicio():
         # Dibujar botones
         dibujar_boton("Nivel", 300, 140, 200, 60, (150, 0, 200), BLANCO)
         dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
-        dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 0, 0), BLANCO)
-        dibujar_boton("Salir", 300, 360, 200, 50, (200, 200, 0), BLANCO)
+        dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
+        dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
 
         # Verificar eventos (clic en los botones)
         for evento in pygame.event.get():
@@ -212,8 +213,10 @@ def pantalla_seleccion_nivel():
 # Función para mostrar la pantalla de puntajes
 def pantalla_puntajes():
     corriendo = True
+    fondo = pygame.image.load('fondo2.jpg')   # Asegúrate de tener una imagen llamada 'fondo.jpg'
+    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
     while corriendo:
-        pantalla.fill(BLANCO)
+        pantalla.blit(fondo, (0, 0))
         mostrar_texto("Puntajes", NEGRO, 300, 50)
 
         # Leer los puntajes desde el archivo puntajes.txt
@@ -321,6 +324,8 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                 # Detectar clic en botones
                 if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
                     reiniciar_juego(tamano_matriz, nivel)
+                elif 600 <= x <= 750 and 300 <= y <=400 :# Inicio
+                    pantalla_inicio()
                 elif 600 <= x <= 750 and 440 <= y <= 490:  # Salir
                     pygame.quit()
                     sys.exit()
@@ -335,8 +340,9 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
         pantalla.fill(BLANCO)
         mostrar_puntaje(puntaje) 
         dibujar_tablero(matriz, intentos, tamano_matriz)
-        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)
-        dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)
+        dibujar_boton("Salir",      600, 440, 150, 50, (200, 0, 0), NEGRO)
+        dibujar_boton("Reiniciar",  600, 500, 150, 50, (200, 200, 0), NEGRO)
+        dibujar_boton("Inicio",     600, 300, 150, 50, (180, 200, 120), NEGRO)
         pygame.display.flip()
 
 
@@ -388,9 +394,11 @@ def poner_naves(matriz, naves):
 
 def dibujar_tablero(matriz, intentos, tamano_matriz):
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
+    
     for fila in range(tamano_matriz):
         for columna in range(tamano_matriz):
-            color = BLANCO if matriz[fila][columna] == 0 else (0, 200, 0)
+            # Dibujar las celdas con un color neutro (por ejemplo, blanco), sin importar si es nave o no
+            color = BLANCO  # Siempre blanco para ocultar las naves
             pygame.draw.rect(pantalla, color, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda))
             pygame.draw.rect(pantalla, NEGRO, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda), 2)
 
@@ -406,6 +414,7 @@ def dibujar_tablero(matriz, intentos, tamano_matriz):
                 pygame.draw.circle(pantalla, (0, 0, 255), 
                                    (columna * tamano_celda + tamano_celda // 2, 
                                     fila * tamano_celda + tamano_celda // 2), tamano_celda // 3, 2)
+
 
 
 
