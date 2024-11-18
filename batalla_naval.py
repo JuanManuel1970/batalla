@@ -40,10 +40,12 @@ ALTO = 600
 tamano_celda = 30
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("Batalla Naval")
+pygame.mixer.init()
 
 # Fuentes
 fuente = pygame.font.SysFont('Arial', 36)
-
+music_on = True
+pygame.mixer.music.set_volume(0.15)
 # Colores
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
@@ -55,15 +57,18 @@ fondo_nivel = pygame.image.load('imagenes/fondo1.jpg')
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 
-# Inicializar el mixer de pygame para usar sonidos
-pygame.mixer.init()
+
 
 # Cargar el sonido del acierto (asegúrate de que el archivo de sonido esté en la carpeta adecuada)
 sonido_acierto = pygame.mixer.Sound('sonidos/disparo.mp3')
 sonido_fallo = pygame.mixer.Sound('sonidos/agua.mp3')
 sonido_hundido = pygame.mixer.Sound('sonidos/hundido.mp3')
 
+# Cargar la música de fondo (asegúrate de que el archivo .mp3 esté en el mismo directorio o en la ruta correcta)
+pygame.mixer.music.load('sonidos/fondo.mp3')
 
+# Reproducir la música en bucle (-1 significa bucle infinito)
+pygame.mixer.music.play(-1, 0.0)
 
 # Función para mostrar un texto en la pantalla
 def mostrar_texto(texto, color, x, y):
@@ -129,6 +134,25 @@ def pedir_nombre(puntaje):
         pygame.display.flip()
         clock.tick(30)
 
+# Función para mostrar texto en la pantalla
+def mostrar_texto(texto, color, x, y):
+    texto_renderizado = fuente.render(texto, True, color)
+    pantalla.blit(texto_renderizado, (x, y))
+
+# Función para crear un botón
+def crear_boton(texto, color, x, y, ancho, alto):
+    pygame.draw.rect(pantalla, color, (x, y, ancho, alto))
+    mostrar_texto(texto, BLANCO, x + 10, y + 10)
+
+# Función para verificar si el botón ha sido presionado
+def boton_presionado(x, y, ancho, alto, mouse_x, mouse_y):
+    return x < mouse_x < x + ancho and y < mouse_y < y + alto
+
+def dibujar_boton_musica(x, y, ancho, alto, color_boton, color_texto):
+    texto = "Música: ON" if music_on else "Música: OFF"
+    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
+    mostrar_texto(texto, color_texto, x + 20, y + 20)
+
 # Función para reiniciar el juego
 def reiniciar_juego(tamano_matriz, nivel):
     iniciar_juego(tamano_matriz, nivel)
@@ -136,7 +160,7 @@ def reiniciar_juego(tamano_matriz, nivel):
 # Función para mostrar la pantalla de inicio
 def pantalla_inicio():
     nivel_predeterminado = "fácil"  # Nivel predeterminado si el jugador no selecciona otro nivel
-
+    global music_on 
     while True:
         pantalla.blit(fondo, (0, 0))  # Mostrar el fondo
         mostrar_texto("Batalla Naval", NEGRO, 300, 50)  # Título de la pantalla
@@ -146,6 +170,8 @@ def pantalla_inicio():
         dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
         dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
         dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
+
+        dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO)
 
         # Verificar eventos (clic en los botones)
         for evento in pygame.event.get():
@@ -170,7 +196,13 @@ def pantalla_inicio():
                 elif 300 <= x <= 500 and 360 <= y <= 410:  # Botón "Salir"
                     pygame.quit()
                     sys.exit()
-
+                elif 30 <= x <= 230 and 30 <= y <= 80:  # Botón "Música"
+                    music_on = not music_on  # Cambiar el estado de la música
+                if music_on:
+                    pygame.mixer.music.play(-1, 0.0)  # Reproducir música
+                else:
+                    pygame.mixer.music.stop() 
+    
         pygame.display.flip()  # Actualizar la pantalla
 
       
@@ -266,7 +298,6 @@ def pantalla_puntajes():
 
 
 
-
 # Definir la función crear_matriz para crear un tablero de tamaño tamano_matriz x tamano_matriz
 def crear_matriz(tamano_matriz):
     return [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
@@ -275,6 +306,7 @@ def crear_matriz(tamano_matriz):
 
 
 def iniciar_juego(tamano_matriz, nivel="fácil"):
+   
     print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
     matriz = crear_matriz(tamano_matriz)
     intentos = crear_matriz(tamano_matriz)  # Matriz para registrar los intentos del jugador (-1: fallo, 1: acierto)
@@ -334,6 +366,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 
                             print(f"Fallo en ({fila}, {columna})")
 
+
                 # Detectar clic en botones
                 if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
                     reiniciar_juego(tamano_matriz, nivel)
@@ -356,7 +389,9 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
         dibujar_boton("Salir",      600, 440, 150, 50, (200, 0, 0), NEGRO)
         dibujar_boton("Reiniciar",  600, 500, 150, 50, (200, 200, 0), NEGRO)
         dibujar_boton("Inicio",     600, 300, 150, 50, (180, 200, 120), NEGRO)
+        
         pygame.display.flip()
+
 
 
 
