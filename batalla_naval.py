@@ -26,7 +26,7 @@
 # volver al menú principal. OPCIONALES:  Nivel de dificultad. ● Pantalla de inicio: agregar un (1) botón para activar / desactivar el sonido de fondo.  Al disparar: o Reproducir
 # un sonido de disparo acertado. o Reproducir un sonido de disparo errado.  Agregar imágenes, sonidos, y animaciones donde corresponda. 
 from funciones_batalla import *
-from configuracion_batalla import *
+
 import pygame
 import random
 import sys
@@ -49,11 +49,19 @@ BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 puntaje = 0 
 # Cargar imagen de fondo
-fondo = pygame.image.load('fondo.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
-fondo_nivel = pygame.image.load('fondo1.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
-fondo_nivel = pygame.image.load('fondo2.jpg')  # Asegúrate de tener una imagen llamada 'fondo.jpg'
+fondo = pygame.image.load('imagenes/fondo.jpg')  
+fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
+
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
+
+# Inicializar el mixer de pygame para usar sonidos
+pygame.mixer.init()
+
+# Cargar el sonido del acierto (asegúrate de que el archivo de sonido esté en la carpeta adecuada)
+sonido_acierto = pygame.mixer.Sound('sonidos/disparo.mp3')
+sonido_fallo = pygame.mixer.Sound('sonidos/agua.mp3')
+sonido_hundido = pygame.mixer.Sound('sonidos/hundido.mp3')
 
 
 
@@ -172,7 +180,7 @@ def pantalla_seleccion_nivel():
     corriendo = True
     
     # Cargar la imagen de fondo
-    fondo = pygame.image.load('fondo1.jpg')  # Asegúrate de tener la imagen en el directorio adecuado
+    fondo = pygame.image.load('imagenes/fondo1.jpg')  # Asegúrate de tener la imagen en el directorio adecuado
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))  # Ajusta el tamaño de la imagen al tamaño de la pantalla
     
     while corriendo:
@@ -213,7 +221,7 @@ def pantalla_seleccion_nivel():
 # Función para mostrar la pantalla de puntajes
 def pantalla_puntajes():
     corriendo = True
-    fondo = pygame.image.load('fondo2.jpg')   # Asegúrate de tener una imagen llamada 'fondo.jpg'
+    fondo = pygame.image.load('imagenes/fondo2.jpg')   # Asegúrate de tener una imagen llamada 'fondo.jpg'
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
     while corriendo:
         pantalla.blit(fondo, (0, 0))
@@ -306,19 +314,24 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                         if matriz[fila][columna] == 1:  # Acierto
                             intentos[fila][columna] = 1
                             puntaje += 5
-                            aciertos.append((fila, columna))  # Registrar el acierto
+                            aciertos.append((fila, columna)) 
+                            sonido_acierto.play() # Registrar el acierto
                             print(f"Acierto en ({fila}, {columna})")
                             
                             # Verificar si alguna nave ha sido hundida
                             for nave in coordenadas_naves:
                                 if all(coordenada in aciertos for coordenada in nave):
                                     puntaje += len(nave) * 10  # 10 puntos por cada elemento de la nave
+                                    sonido_hundido.play() # Registrar el acierto
+
                                     print(f"Nave hundida! +{len(nave)*10} puntos")
                                     coordenadas_naves.remove(nave)  # Eliminar la nave hundida de la lista
 
                         else:  # Fallo
                             intentos[fila][columna] = -1
                             puntaje -= 1
+                            sonido_fallo.play() # Registrar el acierto
+
                             print(f"Fallo en ({fila}, {columna})")
 
                 # Detectar clic en botones
