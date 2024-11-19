@@ -1,11 +1,8 @@
-
 from funciones_batalla import *
 from configuracion_batalla import *
 import pygame
 import random
 import sys
-
-
 
 
 pygame.init()
@@ -40,12 +37,11 @@ def guardar_puntaje(nombre, puntaje):
 
         
 def pedir_nombre(puntaje):
-    fuente = pygame.font.SysFont("Arial", 30)
+    fuente = pygame.font.SysFont('Arial', 23, bold = True)
     input_box = pygame.Rect(250, 300, 200, 40)
     color = pygame.Color(141, 182, 205)
     text = ''
-
-    pantalla.fill((255, 255, 255))  # Fondo blanco
+    pantalla.fill((255, 255, 255))  
     texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
 
@@ -55,28 +51,29 @@ def pedir_nombre(puntaje):
                 pygame.quit()
                 sys.exit()
             elif evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_RETURN:  # Finaliza al presionar Enter
+                if evento.key == pygame.K_RETURN:  
                     return text
-                elif evento.key == pygame.K_BACKSPACE:  # Borra el último carácter
-                    text = text[:-1]
-                else:  # Agrega caracteres al texto
-                    text += evento.unicode
+                elif evento.key == pygame.K_BACKSPACE:  
+                    text = text[0:-1]
+                else:  
+                    text += evento.unicode 
 
-        pantalla.fill((255, 255, 255))  # Vuelve a pintar el fondo
-        pantalla.blit(texto_puntaje, (250, 250))  # Dibuja nuevamente el puntaje
+        pantalla.fill((255, 255, 255)) 
+        pantalla.blit(texto_puntaje, (250, 250)) 
 
-        # Dibuja el cuadro de entrada y el texto
+        
         pygame.draw.rect(pantalla, color, input_box, 2)
         texto_nombre = fuente.render(text, True, (0, 0, 0))
         pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
 
-        pygame.display.flip()  # Actualiza la pantalla
+        pygame.display.flip()  
 
 
 
 def mostrar_texto(texto, color, x, y):
     texto_renderizado = fuente.render(texto, True, color)
     pantalla.blit(texto_renderizado, (x, y))
+
 
 
 
@@ -237,23 +234,12 @@ def pantalla_puntajes():
 
 
 
-
-
-
-
-
-
-
-
-
 def crear_matriz(tamano_matriz):
     matriz = [] 
     for _ in range(tamano_matriz):
         fila = [0] * tamano_matriz 
         matriz.append(fila) 
     return matriz
-
-
 
 
 def iniciar_juego(tamano_matriz, nivel="fácil"):
@@ -264,7 +250,6 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     puntaje = 0
     aciertos = []
     
-
     if nivel == "medio":
         naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
     elif nivel == "difícil":
@@ -272,9 +257,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     else:
         naves = [("acorazado", 4, 1), ("crucero", 3, 2), ("destructor", 2, 3), ("submarino", 1, 4)]
 
-
     coordenadas_naves = poner_naves(matriz, naves)
-    
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     corriendo = True
     casillas_clicadas = 0
@@ -299,8 +282,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                             aciertos.append((fila, columna)) 
                             sonido_acierto.play()
                             print(f"Acierto en ({fila}, {columna})")
-                            
-                            
+                                                      
                             for nave in coordenadas_naves:
                                 if all(coordenada in aciertos for coordenada in nave):
                                     puntaje += len(nave) * 10 
@@ -348,7 +330,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 def poner_naves(matriz, naves):
     tamano_matriz = len(matriz)  
     coordenadas_naves = []  
-    for nombre, largo, cantidad in naves:
+    for naves,largo, cantidad in naves:
         for _ in range(cantidad): 
             colocada = False  
             while not colocada:
@@ -392,9 +374,7 @@ def dibujar_tablero(matriz, intentos, tamano_matriz):
             x = columna * tamano_celda
             y = fila * tamano_celda
             pygame.draw.rect(pantalla, BLANCO, (x, y, tamano_celda, tamano_celda))
-            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)
-
-         
+            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)       
             if intentos[fila][columna] == 1:  
                 pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)
                 pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)

@@ -1,3 +1,2 @@
 Juan,222
-Matias,229
-Val,235
+Matias,225
