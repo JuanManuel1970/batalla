@@ -280,20 +280,21 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                             puntaje += 5
                             aciertos.append((fila, columna))  # Guarda si le pegamos a la neave
                             sonido_acierto.play()
-                         
+                            print(f"Acierto en ({fila}, {columna})")
 
                             # Esto verifica si la nave fu hundida
                             for nave in coordenadas_naves:
                                 if all(coordenada in aciertos for coordenada in nave):
                                     puntaje += len(nave) * 10  # Le suma el puntaje adicional por haber hundido la nave
                                     sonido_hundido.play()
+                                    print(f"Nave hundida! +{len(nave)*10} puntos")
                                     coordenadas_naves.remove(nave)  # Borra la nave hundida.
 
                         else:  
                             intentos[fila][columna] = -1
                             puntaje -= 1 #Le resta uno si da en el agua
                             sonido_fallo.play()
-
+                            print(f"Fallo en ({fila}, {columna})")
 
                 
                 if 600 <= x <= 750 and 500 <= y <= 550:  
