@@ -118,13 +118,10 @@ def pantalla_inicio():
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
                 if 300 <= x <= 500 and 140 <= y <= 200: 
-                    print("Seleccionar Nivel")
                     pantalla_seleccion_nivel() 
                 elif 300 <= x <= 500 and 220 <= y <= 270:  
-                    print("Iniciar Juego")
                     iniciar_juego(10, nivel=nivel_predeterminado)  
                 elif 300 <= x <= 500 and 290 <= y <= 340:  
-                    print("Ver Puntajes")
                     pantalla_puntajes()  
                 elif 300 <= x <= 500 and 360 <= y <= 410:  
                     pygame.quit()
@@ -176,15 +173,12 @@ def pantalla_seleccion_nivel():
                 x, y = pygame.mouse.get_pos()
                 
                 if 300 <= x <= 500 and 150 <= y <= 200:  
-                    print("Nivel Fácil seleccionado")
                     iniciar_juego(10, nivel="fácil")  
                     corriendo = False
                 elif 300 <= x <= 500 and 220 <= y <= 270:  
-                    print("Nivel Medio seleccionado")
                     iniciar_juego(20, nivel="medio")  
                     corriendo = False
                 elif 300 <= x <= 500 and 290 <= y <= 340:
-                    print("Nivel Difícil seleccionado")
                     iniciar_juego(40, nivel="difícil")  
                     corriendo = False    
         pygame.display.flip()  
@@ -243,86 +237,86 @@ def crear_matriz(tamano_matriz):
 
 
 def iniciar_juego(tamano_matriz, nivel="fácil"):
-   
-    print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
+    # Crear la matriz 
     matriz = crear_matriz(tamano_matriz)
-    intentos = crear_matriz(tamano_matriz) 
+    intentos = crear_matriz(tamano_matriz)
+    
+ 
     puntaje = 0
     aciertos = []
     
+    # Segun el nivel coloca las naves
     if nivel == "medio":
         naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
     elif nivel == "difícil":
         naves = [("acorazado", 4, 3), ("crucero", 3, 6), ("destructor", 2, 9), ("submarino", 1, 12)]
-    else:
+    else: 
         naves = [("acorazado", 4, 1), ("crucero", 3, 2), ("destructor", 2, 3), ("submarino", 1, 4)]
 
+    
     coordenadas_naves = poner_naves(matriz, naves)
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
+
     corriendo = True
     casillas_clicadas = 0
-    total_casillas = tamano_matriz * tamano_matriz  
+    total_casillas = tamano_matriz * tamano_matriz
 
+    
     while corriendo:
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
-                sys.exit()
+                sys.exit()  
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-
-               
+                
+                # Calcular la celda seleccionada en la matriz.
                 fila, columna = y // tamano_celda, x // tamano_celda
                 if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz:
-                    if intentos[fila][columna] == 0:  
-                        casillas_clicadas += 1 
+                    if intentos[fila][columna] == 0:  # Verifica si la celda se clickeo antes
+                        casillas_clicadas += 1  
                         if matriz[fila][columna] == 1:  
                             intentos[fila][columna] = 1
                             puntaje += 5
-                            aciertos.append((fila, columna)) 
+                            aciertos.append((fila, columna))  # Guarda si le pegamos a la neave
                             sonido_acierto.play()
-                            print(f"Acierto en ({fila}, {columna})")
-                                                      
+                         
+
+                            # Esto verifica si la nave fu hundida
                             for nave in coordenadas_naves:
                                 if all(coordenada in aciertos for coordenada in nave):
-                                    puntaje += len(nave) * 10 
-                                    sonido_hundido.play() 
-
-                                    print(f"Nave hundida! +{len(nave)*10} puntos")
-                                    coordenadas_naves.remove(nave)  
+                                    puntaje += len(nave) * 10  # Le suma el puntaje adicional por haber hundido la nave
+                                    sonido_hundido.play()
+                                    coordenadas_naves.remove(nave)  # Borra la nave hundida.
 
                         else:  
                             intentos[fila][columna] = -1
-                            puntaje -= 1
-                            sonido_fallo.play() 
-
-                            print(f"Fallo en ({fila}, {columna})")
+                            puntaje -= 1 #Le resta uno si da en el agua
+                            sonido_fallo.play()
 
 
-               
+                
                 if 600 <= x <= 750 and 500 <= y <= 550:  
                     reiniciar_juego(tamano_matriz, nivel)
-                elif 600 <= x <= 750 and 300 <= y <=400 :
+                elif 600 <= x <= 750 and 300 <= y <= 400:
                     pantalla_inicio()
                 elif 600 <= x <= 750 and 440 <= y <= 490: 
                     pygame.quit()
                     sys.exit()
 
-       
+        # Verifica si hundieron todas las naves o si se clikearon todos los casilleros
         if len(coordenadas_naves) == 0 or casillas_clicadas == total_casillas:
-            print("Juego Terminado!")
             guardar_puntaje(pedir_nombre(puntaje), puntaje)  
             reiniciar_juego(tamano_matriz, nivel)  
-  
 
-        pantalla.fill(BLANCO)
-        mostrar_puntaje(puntaje) 
-        dibujar_tablero(matriz, intentos, tamano_matriz)
-        dibujar_boton("Salir",      600, 440, 150, 50, (200, 0, 0), NEGRO)
-        dibujar_boton("Reiniciar",  600, 500, 150, 50, (200, 200, 0), NEGRO)
-        dibujar_boton("Inicio",     600, 300, 150, 50, (180, 200, 120), NEGRO)
         
-        pygame.display.flip()
+        pantalla.fill(BLANCO) 
+        mostrar_puntaje(puntaje)  
+        dibujar_tablero(matriz, intentos, tamano_matriz)  
+        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)  
+        dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)  
+        dibujar_boton("Inicio", 600, 300, 150, 50, (180, 200, 120), NEGRO)  
+        pygame.display.flip() 
 
 
 
