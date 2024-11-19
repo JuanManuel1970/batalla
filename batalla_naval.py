@@ -30,248 +30,256 @@ from configuracion_batalla import *
 import pygame
 import random
 import sys
+import os
 
 
 
 pygame.init()
 
 
-# Fuentes
+
 fuente = pygame.font.SysFont('Arial', 36)
+
 music_on = True
 puntaje = 0 
 
-# Función para mostrar un texto en la pantalla
+
 def mostrar_texto(texto, color, x, y):
     texto_renderizado = fuente.render(texto, True, color)
     pantalla.blit(texto_renderizado, (x, y))
 
-# Función para dibujar un botón
+
 def dibujar_boton(texto, x, y, ancho, alto, color_boton, color_texto):
     pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
-    mostrar_texto(texto, color_texto, x + 20, y + 20)  # Ajuste de posición del texto en el botón
-
+    mostrar_texto(texto, color_texto, x + 20, y + 20) 
 
 
 def mostrar_puntaje(puntaje):
-    fuente = pygame.font.SysFont("Arial", 36)  # Fuente y tamaño del texto
-    texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO)  # Formato 0000
-    pantalla.blit(texto, (600, 10))  # Dibuja el texto en la esquina superior izquierda
+    fuente = pygame.font.SysFont("Arial", 36)  
+    texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO) 
+    pantalla.blit(texto, (600, 10))  
 
-# Función para guardar el puntaje en un archivo
+
 def guardar_puntaje(nombre, puntaje):
     with open("puntajes.txt", "a") as archivo:
         archivo.write(f"{nombre},{puntaje}\n")
 
-# Función para pedir el nombre del jugador
-def pedir_nombre(puntaje):
-    fuente = pygame.font.SysFont("Arial", 30)
-    input_box = pygame.Rect(250, 300, 200, 40)
-    color_inactive = pygame.Color("lightskyblue3")
-    color_active = pygame.Color("dodgerblue2")
-    color = color_inactive
-    active = False
-    text = ''
-    clock = pygame.time.Clock()
-    pantalla.fill((255, 255, 255))
+        
 
+def pedir_nombre(puntaje):
+    fuente = pygame.font.SysFont("Arial", 30) 
+    input_box = pygame.Rect(250, 300, 200, 40)  
+    color = pygame.Color(141, 182, 205)  
+    text = ''  
+    clock = pygame.time.Clock()  
+    pantalla.fill((255, 255, 255))  
     texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
 
     while True:
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
+            if evento.type == pygame.QUIT: 
                 pygame.quit()
                 sys.exit()
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                if input_box.collidepoint(evento.pos):
-                    active = not active
+            elif evento.type == pygame.MOUSEBUTTONDOWN:  
+                if input_box.collidepoint(evento.pos):  
+                    color = pygame.Color(28, 134, 238)  
                 else:
-                    active = False
-                color = color_active if active else color_inactive
-            if evento.type == pygame.KEYDOWN:
-                if active:
-                    if evento.key == pygame.K_RETURN:
-                        return text
-                    elif evento.key == pygame.K_BACKSPACE:
-                        text = text[:-1]
-                    else:
-                        text += evento.unicode
-
+                    color = pygame.Color(141, 182, 205) 
+            elif evento.type == pygame.KEYDOWN:  
+                if evento.key == pygame.K_RETURN:  
+                    return text  
+                elif evento.key == pygame.K_BACKSPACE: 
+                    text = text[:-1]
+                else: 
+                    text += evento.unicode
+  
         pygame.draw.rect(pantalla, color, input_box, 2)
         texto_nombre = fuente.render(text, True, (0, 0, 0))
         pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
+        pygame.display.flip() 
+        clock.tick(30)  
 
-        pygame.display.flip()
-        clock.tick(30)
 
-# Función para mostrar texto en la pantalla
+
 def mostrar_texto(texto, color, x, y):
     texto_renderizado = fuente.render(texto, True, color)
     pantalla.blit(texto_renderizado, (x, y))
 
-# Función para crear un botón
+
+
 def crear_boton(texto, color, x, y, ancho, alto):
     pygame.draw.rect(pantalla, color, (x, y, ancho, alto))
     mostrar_texto(texto, BLANCO, x + 10, y + 10)
 
-# Función para verificar si el botón ha sido presionado
+
+
 def boton_presionado(x, y, ancho, alto, mouse_x, mouse_y):
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
-def dibujar_boton_musica(x, y, ancho, alto, color_boton, color_texto):
-    texto = "Música: ON" if music_on else "Música: OFF"
-    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
-    mostrar_texto(texto, color_texto, x + 20, y + 20)
 
-# Función para reiniciar el juego
+
 def reiniciar_juego(tamano_matriz, nivel):
     iniciar_juego(tamano_matriz, nivel)
 
-# Función para mostrar la pantalla de inicio
-def pantalla_inicio():
-    nivel_predeterminado = "fácil"  # Nivel predeterminado si el jugador no selecciona otro nivel
-    global music_on 
-    while True:
-        pantalla.blit(fondo, (0, 0))  # Mostrar el fondo
-        mostrar_texto("Batalla Naval", NEGRO, 300, 50)  # Título de la pantalla
 
-        # Dibujar botones
+
+
+
+def pantalla_inicio():
+    nivel_predeterminado = "fácil"  
+    music_on = True  
+
+    while True:
+        pantalla.blit(fondo, (0, 0))  
+        mostrar_texto("Batalla Naval", NEGRO, 300, 50) 
+
         dibujar_boton("Nivel", 300, 140, 200, 60, (150, 0, 200), BLANCO)
         dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
         dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
         dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
+        dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO, music_on)
 
-        dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO)
-
-        # Verificar eventos (clic en los botones)
+        
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                # Obtener posición del ratón
                 x, y = pygame.mouse.get_pos()
-
-                # Verificar si se hizo clic en algún botón
-                if 300 <= x <= 500 and 140 <= y <= 200:  # Botón "Nivel"
+                if 300 <= x <= 500 and 140 <= y <= 200: 
                     print("Seleccionar Nivel")
-                    pantalla_seleccion_nivel()  # Llamar a la pantalla de selección de nivel
-                elif 300 <= x <= 500 and 220 <= y <= 270:  # Botón "Jugar"
+                    pantalla_seleccion_nivel() 
+                elif 300 <= x <= 500 and 220 <= y <= 270:  
                     print("Iniciar Juego")
-                    iniciar_juego(10, nivel=nivel_predeterminado)  # Inicia el juego directamente
-                elif 300 <= x <= 500 and 290 <= y <= 340:  # Botón "Ver Puntajes"
+                    iniciar_juego(10, nivel=nivel_predeterminado)  
+                elif 300 <= x <= 500 and 290 <= y <= 340:  
                     print("Ver Puntajes")
-                    pantalla_puntajes()  # Llamar a la función para ver los puntajes
-                elif 300 <= x <= 500 and 360 <= y <= 410:  # Botón "Salir"
+                    pantalla_puntajes()  
+                elif 300 <= x <= 500 and 360 <= y <= 410:  
                     pygame.quit()
                     sys.exit()
-                elif 30 <= x <= 230 and 30 <= y <= 80:  # Botón "Música"
-                    music_on = not music_on  # Cambiar el estado de la música
+                elif 30 <= x <= 230 and 30 <= y <= 80:  
+                    music_on = not music_on 
+
+                
                 if music_on:
-                    pygame.mixer.music.play(-1, 0.0)  # Reproducir música
+                    pygame.mixer.music.play(-1, 0.0) 
                 else:
                     pygame.mixer.music.stop() 
-    
-        pygame.display.flip()  # Actualizar la pantalla
 
-      
+        pygame.display.flip()  
 
-# Función para mostrar la pantalla de selección de nivel
+
+
+def dibujar_boton_musica(x, y, ancho, alto, color_boton, color_texto, music_on):
+    texto = "Música: ON" if music_on else "Música: OFF"
+    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
+    mostrar_texto(texto, color_texto, x + 20, y + 20)
+
+
+
+
 def pantalla_seleccion_nivel():
     corriendo = True
     
-    # Cargar la imagen de fondo
-    fondo = pygame.image.load('imagenes/fondo1.jpg')  # Asegúrate de tener la imagen en el directorio adecuado
-    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))  # Ajusta el tamaño de la imagen al tamaño de la pantalla
+  
+    fondo = pygame.image.load('imagenes/fondo1.jpg')  
+    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))  
     
     while corriendo:
-        pantalla.blit(fondo, (0, 0))  # Dibujar el fondo en la pantalla
-        mostrar_texto("Selecciona el Nivel", NEGRO, 270, 50)  # Título de la pantalla
+        pantalla.blit(fondo, (0, 0))  
+        mostrar_texto("Selecciona el Nivel", NEGRO, 270, 50)  
         
-        # Dibujar botones de nivel
+      
         dibujar_boton("Fácil", 300, 150, 200, 50, (0, 200, 0), BLANCO)
         dibujar_boton("Medio", 300, 220, 200, 50, (0, 0, 200), BLANCO)
         dibujar_boton("Difícil", 300, 290, 200, 50, (200, 0, 0), BLANCO)
         
-        # Verificar eventos (clic en los botones)
+        
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                # Obtener posición del ratón
+            if evento.type == pygame.MOUSEBUTTONDOWN: 
                 x, y = pygame.mouse.get_pos()
                 
-                # Verificar si se hizo clic en algún botón de nivel
-                if 300 <= x <= 500 and 150 <= y <= 200:  # Botón "Fácil"
+                if 300 <= x <= 500 and 150 <= y <= 200:  
                     print("Nivel Fácil seleccionado")
-                    iniciar_juego(10, nivel="fácil")  # Llamar a la función para iniciar el juego con tablero de 10x10
+                    iniciar_juego(10, nivel="fácil")  
                     corriendo = False
-                elif 300 <= x <= 500 and 220 <= y <= 270:  # Botón "Medio"
+                elif 300 <= x <= 500 and 220 <= y <= 270:  
                     print("Nivel Medio seleccionado")
-                    iniciar_juego(20, nivel="medio")  # Llamar a la función para iniciar el juego con tablero de 20x20
+                    iniciar_juego(20, nivel="medio")  
                     corriendo = False
-                elif 300 <= x <= 500 and 290 <= y <= 340:  # Botón "Difícil"
+                elif 300 <= x <= 500 and 290 <= y <= 340:
                     print("Nivel Difícil seleccionado")
-                    iniciar_juego(40, nivel="difícil")  # Llamar a la función para iniciar el juego con tablero de 40x40
-                    corriendo = False
-        
+                    iniciar_juego(40, nivel="difícil")  
+                    corriendo = False    
         pygame.display.flip()  
  
-# Función para mostrar la pantalla de puntajes
+
+
 def pantalla_puntajes():
     corriendo = True
-    fondo = pygame.image.load('imagenes/fondo2.jpg')   # Asegúrate de tener una imagen llamada 'fondo.jpg'
-    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
+
     while corriendo:
         pantalla.blit(fondo, (0, 0))
         mostrar_texto("Puntajes", NEGRO, 300, 50)
 
-        # Leer los puntajes desde el archivo puntajes.txt
-        try:
-            with open("puntajes.txt", "r") as archivo:
-                puntajes = archivo.readlines()
+      
+        with open("puntajes.txt", "a+") as archivo:
+            archivo.seek(0) 
+            puntajes = [linea.strip().split(",") for linea in archivo.readlines() if linea.strip()]
 
-            # Filtrar las líneas vacías y asegurarse de que cada línea tenga el formato correcto
-            puntajes = [linea.strip() for linea in puntajes if linea.strip()]
-            puntajes = [linea.split(",") for linea in puntajes if len(linea.split(",")) == 2]
+       
+        puntajes = [(nombre, int(puntaje)) for nombre, puntaje in puntajes if len(puntaje) > 0]
+        puntajes.sort(key=lambda x: x[1], reverse=True)
 
-            # Convertir los puntajes en una lista de tuplas (nombre, puntaje)
-            puntajes = [(nombre, int(puntaje)) for nombre, puntaje in puntajes]  # Convertir los puntajes a enteros
+       
+        for i in range(min(3, len(puntajes))):
+            nombre, puntos = puntajes[i]
+            mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 300, 150 + i * 30)
 
-            # Ordenar los puntajes de mayor a menor
-            puntajes.sort(key=lambda x: x[1], reverse=True)
+       
+        for i in range(len(puntajes), 3):
+            mostrar_texto(f"{i+1}. No hay puntajes", NEGRO, 300, 150 + i * 30)
 
-            # Mostrar los tres mejores puntajes
-            for i, (nombre, puntos) in enumerate(puntajes[:3]):
-                mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 300, 150 + i * 30)  # Mostrar solo los 3 mejores
-
-        except FileNotFoundError:
-            # Si el archivo no existe, mostramos un mensaje
-            mostrar_texto("No hay puntajes guardados", NEGRO, 300, 150)
-
-        # Dibujar botón para regresar al menú
+       
         dibujar_boton("Volver", 300, 360, 200, 50, (200, 200, 0), NEGRO)
 
+      
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                if 300 <= x <= 500 and 360 <= y <= 410:  # Botón "Volver"
+                if 300 <= x <= 500 and 360 <= y <= 410:
                     corriendo = False
-        
+
         pygame.display.flip()
 
 
 
-# Definir la función crear_matriz para crear un tablero de tamaño tamano_matriz x tamano_matriz
+
+
+
+
+
+
+
+
+
 def crear_matriz(tamano_matriz):
-    return [[0 for _ in range(tamano_matriz)] for _ in range(tamano_matriz)]
+    matriz = [] 
+    for _ in range(tamano_matriz):
+        fila = [0] * tamano_matriz 
+        matriz.append(fila) 
+    return matriz
 
 
 
@@ -280,11 +288,11 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
    
     print(f"Iniciando juego con tablero de tamaño {tamano_matriz}x{tamano_matriz} y nivel {nivel}")
     matriz = crear_matriz(tamano_matriz)
-    intentos = crear_matriz(tamano_matriz)  # Matriz para registrar los intentos del jugador (-1: fallo, 1: acierto)
+    intentos = crear_matriz(tamano_matriz) 
     puntaje = 0
     aciertos = []
     
-    # Configurar las naves según el nivel
+
     if nivel == "medio":
         naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
     elif nivel == "difícil":
@@ -292,13 +300,13 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
     else:
         naves = [("acorazado", 4, 1), ("crucero", 3, 2), ("destructor", 2, 3), ("submarino", 1, 4)]
 
-    # Crear las coordenadas de las naves en la matriz
+
     coordenadas_naves = poner_naves(matriz, naves)
     
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
     corriendo = True
     casillas_clicadas = 0
-    total_casillas = tamano_matriz * tamano_matriz  # Número total de casillas en el tablero
+    total_casillas = tamano_matriz * tamano_matriz  
 
     while corriendo:
         for evento in pygame.event.get():
@@ -308,51 +316,50 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
 
-                # Detectar clic en el tablero
+               
                 fila, columna = y // tamano_celda, x // tamano_celda
                 if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz:
-                    if intentos[fila][columna] == 0:  # Solo registrar si no ha sido clicado antes
-                        casillas_clicadas += 1  # Contar las casillas clicadas
-
-                        if matriz[fila][columna] == 1:  # Acierto
+                    if intentos[fila][columna] == 0:  
+                        casillas_clicadas += 1 
+                        if matriz[fila][columna] == 1:  
                             intentos[fila][columna] = 1
                             puntaje += 5
                             aciertos.append((fila, columna)) 
-                            sonido_acierto.play() # Registrar el acierto
+                            sonido_acierto.play()
                             print(f"Acierto en ({fila}, {columna})")
                             
-                            # Verificar si alguna nave ha sido hundida
+                            
                             for nave in coordenadas_naves:
                                 if all(coordenada in aciertos for coordenada in nave):
-                                    puntaje += len(nave) * 10  # 10 puntos por cada elemento de la nave
-                                    sonido_hundido.play() # Registrar el acierto
+                                    puntaje += len(nave) * 10 
+                                    sonido_hundido.play() 
 
                                     print(f"Nave hundida! +{len(nave)*10} puntos")
-                                    coordenadas_naves.remove(nave)  # Eliminar la nave hundida de la lista
+                                    coordenadas_naves.remove(nave)  
 
-                        else:  # Fallo
+                        else:  
                             intentos[fila][columna] = -1
                             puntaje -= 1
-                            sonido_fallo.play() # Registrar el acierto
+                            sonido_fallo.play() 
 
                             print(f"Fallo en ({fila}, {columna})")
 
 
-                # Detectar clic en botones
-                if 600 <= x <= 750 and 500 <= y <= 550:  # Reiniciar
+               
+                if 600 <= x <= 750 and 500 <= y <= 550:  
                     reiniciar_juego(tamano_matriz, nivel)
-                elif 600 <= x <= 750 and 300 <= y <=400 :# Inicio
+                elif 600 <= x <= 750 and 300 <= y <=400 :
                     pantalla_inicio()
-                elif 600 <= x <= 750 and 440 <= y <= 490:  # Salir
+                elif 600 <= x <= 750 and 440 <= y <= 490: 
                     pygame.quit()
                     sys.exit()
 
-        # Comprobar si todos los barcos han sido hundidos o si se han clicado todas las casillas
-        if not coordenadas_naves or casillas_clicadas == total_casillas:
+       
+        if len(coordenadas_naves) == 0 or casillas_clicadas == total_casillas:
             print("Juego Terminado!")
-            nombre = pedir_nombre(puntaje)  # Pedir el nombre del jugador
-            guardar_puntaje(nombre, puntaje)  # Guardar el puntaje en el archivo
-            reiniciar_juego(tamano_matriz, nivel)  # Reiniciar el juego
+            guardar_puntaje(pedir_nombre(puntaje), puntaje)  
+            reiniciar_juego(tamano_matriz, nivel)  
+  
 
         pantalla.fill(BLANCO)
         mostrar_puntaje(puntaje) 
@@ -366,78 +373,77 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 
 
 
-# Función para colocar las naves de forma aleatoria en el tablero
 def poner_naves(matriz, naves):
-    tamano_matriz = len(matriz)
-    coordenadas_naves = []  # Lista para guardar las coordenadas de las naves
+    tamano_matriz = len(matriz)  
+    coordenadas_naves = []  
 
-    # Iterar sobre las naves
-    for nave in naves:
-        nombre, largo, cantidad = nave
-
-        # Intentar colocar las naves en el tablero
-        for _ in range(cantidad):  # Para cada nave de este tipo
-            colocada = False  # Bandera para saber si se logró colocar la nave
-
+   
+    for nombre, largo, cantidad in naves:
+        for _ in range(cantidad): 
+            colocada = False  
+           
             while not colocada:
-                # Determinar si la nave será colocada horizontal o verticalmente
+                
                 orientacion = random.choice(["horizontal", "vertical"])
-
-                # Elegir una posición aleatoria en el tablero
+                
                 fila = random.randint(0, tamano_matriz - 1)
                 columna = random.randint(0, tamano_matriz - 1)
 
-                # Verificar si la nave cabe en la posición elegida sin solaparse
-                if orientacion == "horizontal":
-                    if columna + largo <= tamano_matriz:  # Verificar si cabe horizontalmente
-                        # Comprobar si las celdas están vacías
-                        if all(matriz[fila][columna + i] == 0 for i in range(largo)):
-                            # Colocar la nave
-                            for i in range(largo):
-                                matriz[fila][columna + i] = 1  # Marcar las celdas ocupadas
-                            coordenadas_naves.append([(fila, columna + i) for i in range(largo)])  # Guardar las coordenadas
-                            colocada = True  # Nave colocada con éxito
+                
+                if orientacion == "horizontal" and columna + largo <= tamano_matriz:
+                    espacio_libre = True  
 
-                else:  # Colocación vertical
-                    if fila + largo <= tamano_matriz:  # Verificar si cabe verticalmente
-                        # Comprobar si las celdas están vacías
-                        if all(matriz[fila + i][columna] == 0 for i in range(largo)):
-                            # Colocar la nave
-                            for i in range(largo):
-                                matriz[fila + i][columna] = 1  # Marcar las celdas ocupadas
-                            coordenadas_naves.append([(fila + i, columna) for i in range(largo)])  # Guardar las coordenadas
-                            colocada = True  # Nave colocada con éxito
+                   
+                    for i in range(largo):
+                        if matriz[fila][columna + i] != 0: 
+                            espacio_libre = False
+                            break  
 
-    return coordenadas_naves
+                    if espacio_libre:  
+                        for i in range(largo):
+                            matriz[fila][columna + i] = 1  
+                        
+                        coordenadas_naves.append([(fila, columna + i) for i in range(largo)])
+                        colocada = True  
+
+                elif orientacion == "vertical" and fila + largo <= tamano_matriz:
+                    espacio_libre = True  
+
+                  
+                    for i in range(largo):
+                        if matriz[fila + i][columna] != 0: 
+                            espacio_libre = False
+                            break  
+
+                    if espacio_libre: 
+                        for i in range(largo):
+                            matriz[fila + i][columna] = 1 
+                       
+                        coordenadas_naves.append([(fila + i, columna) for i in range(largo)])
+                        colocada = True 
+    return coordenadas_naves  
+
+
 
 
 def dibujar_tablero(matriz, intentos, tamano_matriz):
-    tamano_celda = min(ANCHO, ALTO) // tamano_matriz
-    
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz  
     for fila in range(tamano_matriz):
         for columna in range(tamano_matriz):
-            # Dibujar las celdas con un color neutro (por ejemplo, blanco), sin importar si es nave o no
-            color = BLANCO  # Siempre blanco para ocultar las naves
-            pygame.draw.rect(pantalla, color, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda))
-            pygame.draw.rect(pantalla, NEGRO, (columna * tamano_celda, fila * tamano_celda, tamano_celda, tamano_celda), 2)
+            x = columna * tamano_celda
+            y = fila * tamano_celda
+            pygame.draw.rect(pantalla, BLANCO, (x, y, tamano_celda, tamano_celda))
+            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)
 
-            # Dibujar marcas según los intentos
-            if intentos[fila][columna] == 1:  # Acierto
-                pygame.draw.line(pantalla, (255, 0, 0), 
-                                 (columna * tamano_celda, fila * tamano_celda),
-                                 ((columna + 1) * tamano_celda, (fila + 1) * tamano_celda), 3)
-                pygame.draw.line(pantalla, (255, 0, 0), 
-                                 ((columna + 1) * tamano_celda, fila * tamano_celda),
-                                 (columna * tamano_celda, (fila + 1) * tamano_celda), 3)
-            elif intentos[fila][columna] == -1:  # Fallo
-                pygame.draw.circle(pantalla, (0, 0, 255), 
-                                   (columna * tamano_celda + tamano_celda // 2, 
-                                    fila * tamano_celda + tamano_celda // 2), tamano_celda // 3, 2)
+         
+            if intentos[fila][columna] == 1:  
+                pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)
+                pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)
+            elif intentos[fila][columna] == -1: 
+                centro = (x + tamano_celda // 2, y + tamano_celda // 2)
+                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 2)
 
 
 
 
-
-
-# Ejecutar la pantalla de inicio
 pantalla_inicio()
