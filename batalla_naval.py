@@ -39,40 +39,38 @@ def guardar_puntaje(nombre, puntaje):
         archivo.write(f"{nombre},{puntaje}\n")
 
         
-
 def pedir_nombre(puntaje):
-    fuente = pygame.font.SysFont("Arial", 30) 
-    input_box = pygame.Rect(250, 300, 200, 40)  
-    color = pygame.Color(141, 182, 205)  
-    text = ''  
-    clock = pygame.time.Clock()  
-    pantalla.fill((255, 255, 255))  
+    fuente = pygame.font.SysFont("Arial", 30)
+    input_box = pygame.Rect(250, 300, 200, 40)
+    color = pygame.Color(141, 182, 205)
+    text = ''
+
+    pantalla.fill((255, 255, 255))  # Fondo blanco
     texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
 
     while True:
         for evento in pygame.event.get():
-            if evento.type == pygame.QUIT: 
+            if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif evento.type == pygame.MOUSEBUTTONDOWN:  
-                if input_box.collidepoint(evento.pos):  
-                    color = pygame.Color(28, 134, 238)  
-                else:
-                    color = pygame.Color(141, 182, 205) 
-            elif evento.type == pygame.KEYDOWN:  
-                if evento.key == pygame.K_RETURN:  
-                    return text  
-                elif evento.key == pygame.K_BACKSPACE: 
+            elif evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_RETURN:  # Finaliza al presionar Enter
+                    return text
+                elif evento.key == pygame.K_BACKSPACE:  # Borra el último carácter
                     text = text[:-1]
-                else: 
+                else:  # Agrega caracteres al texto
                     text += evento.unicode
-  
+
+        pantalla.fill((255, 255, 255))  # Vuelve a pintar el fondo
+        pantalla.blit(texto_puntaje, (250, 250))  # Dibuja nuevamente el puntaje
+
+        # Dibuja el cuadro de entrada y el texto
         pygame.draw.rect(pantalla, color, input_box, 2)
         texto_nombre = fuente.render(text, True, (0, 0, 0))
         pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
-        pygame.display.flip() 
-        clock.tick(30)  
+
+        pygame.display.flip()  # Actualiza la pantalla
 
 
 
@@ -350,24 +348,15 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 def poner_naves(matriz, naves):
     tamano_matriz = len(matriz)  
     coordenadas_naves = []  
-
-   
     for nombre, largo, cantidad in naves:
         for _ in range(cantidad): 
             colocada = False  
-           
             while not colocada:
-                
-                orientacion = random.choice(["horizontal", "vertical"])
-                
+                orientacion = random.choice(["horizontal", "vertical"])  
                 fila = random.randint(0, tamano_matriz - 1)
                 columna = random.randint(0, tamano_matriz - 1)
-
-                
                 if orientacion == "horizontal" and columna + largo <= tamano_matriz:
                     espacio_libre = True  
-
-                   
                     for i in range(largo):
                         if matriz[fila][columna + i] != 0: 
                             espacio_libre = False
@@ -375,15 +364,11 @@ def poner_naves(matriz, naves):
 
                     if espacio_libre:  
                         for i in range(largo):
-                            matriz[fila][columna + i] = 1  
-                        
+                            matriz[fila][columna + i] = 1        
                         coordenadas_naves.append([(fila, columna + i) for i in range(largo)])
                         colocada = True  
-
                 elif orientacion == "vertical" and fila + largo <= tamano_matriz:
                     espacio_libre = True  
-
-                  
                     for i in range(largo):
                         if matriz[fila + i][columna] != 0: 
                             espacio_libre = False

@@ -20,9 +20,9 @@ NEGRO = (0, 0, 0)
 
 # Cargar imagen de fondo
 fondo = pygame.image.load('imagenes/fondo.jpg')  
+fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
 
-fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 
 
 sonido_acierto = pygame.mixer.Sound('sonidos/disparo.mp3')
