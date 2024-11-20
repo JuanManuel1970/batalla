@@ -3,7 +3,7 @@ import random
 import sys
 
 
-# Definir el tamaño de la pantalla
+# ---definir el tamaño de la pantalla---
 ANCHO = 800
 ALTO = 600
 tamano_celda = 30
@@ -14,11 +14,11 @@ pygame.mixer.init()
 
 pygame.mixer.music.set_volume(0.15)
 
-# Colores
+# ---colores---
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
 
-# Cargar imagen de fondo
+# ---Cargar imagenes---
 fondo = pygame.image.load('imagenes/fondo.jpg')  
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
