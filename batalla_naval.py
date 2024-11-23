@@ -53,39 +53,6 @@ def mostrar_mensajes():
         y_pos += 20
 
 
-def pedir_nombre(puntaje):
-    fuente = pygame.font.SysFont('Arial', 23, bold = True)
-    input_box = pygame.Rect(250, 300, 200, 40)
-    color = pygame.Color(141, 182, 205)
-    text = ''
-    pantalla.fill((255, 255, 255))  
-    texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
-    pantalla.blit(texto_puntaje, (250, 250))
-
-    while True:
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif evento.type == pygame.KEYDOWN:
-                if evento.key == pygame.K_RETURN:  
-                    return text
-                elif evento.key == pygame.K_BACKSPACE:  
-                    text = text[0:-1]
-                else:  
-                    text += evento.unicode 
-
-        pantalla.fill((255, 255, 255)) 
-        pantalla.blit(texto_puntaje, (250, 250)) 
-
-        
-        pygame.draw.rect(pantalla, color, input_box, 2)
-        texto_nombre = fuente.render(text, True, (0, 0, 0))
-        pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
-
-        pygame.display.flip()  
-
-
 
 def mostrar_texto(texto, color, x, y):
     texto_renderizado = fuente.render(texto, True, color)
@@ -309,7 +276,7 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 
         # ---Verifica si hundieron todas las naves o si se clikearon todos los casilleros---
         if len(coordenadas_naves) == 0 or casillas_clicadas == total_casillas:
-            guardar_puntaje(pedir_nombre(puntaje), puntaje)  
+            guardar_puntaje(pedir_nombre(puntaje, pantalla), puntaje)  
             reiniciar_juego(tamano_matriz, nivel)  
 
         
@@ -321,48 +288,6 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
         dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)  
         dibujar_boton("Inicio", 600, 300, 150, 50, (180, 200, 120), NEGRO)  
         pygame.display.flip() 
-
-
-
-
-def poner_naves(matriz, naves):
-    tamano_matriz = len(matriz)  
-    coordenadas_naves = []  
-    for naves,largo, cantidad in naves:
-        for _ in range(cantidad): 
-            colocada = False  
-            while not colocada:
-                orientacion = random.choice(["horizontal", "vertical"])  
-                fila = random.randint(0, tamano_matriz - 1)
-                columna = random.randint(0, tamano_matriz - 1)
-                if orientacion == "horizontal" and columna + largo <= tamano_matriz:
-                    espacio_libre = True  
-                    for i in range(largo):
-                        if matriz[fila][columna + i] != 0: 
-                            espacio_libre = False
-                            break  
-
-                    if espacio_libre:  
-                        for i in range(largo):
-                            matriz[fila][columna + i] = 1        
-                        coordenadas_naves.append([(fila, columna + i) for i in range(largo)])
-                        colocada = True  
-                elif orientacion == "vertical" and fila + largo <= tamano_matriz:
-                    espacio_libre = True  
-                    for i in range(largo):
-                        if matriz[fila + i][columna] != 0: 
-                            espacio_libre = False
-                            break  
-
-                    if espacio_libre: 
-                        for i in range(largo):
-                            matriz[fila + i][columna] = 1 
-                       
-                        coordenadas_naves.append([(fila + i, columna) for i in range(largo)])
-                        colocada = True 
-    return coordenadas_naves  
-
-
 
 
 
