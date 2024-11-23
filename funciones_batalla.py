@@ -2,6 +2,10 @@ import pygame
 import random
 import sys
 from configuracion_batalla import *
+pygame.init()
+fuente = pygame.font.SysFont('Arial', 25)
+mensajes = []
+
 
 
 def pedir_nombre(puntaje, pantalla)->str:
@@ -124,6 +128,45 @@ def dibujar_tablero(matriz, intentos, tamano_matriz)->None:
 
 
 
+def pantalla_puntajes():
+    corriendo = True
+    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
+
+    while corriendo:
+        pantalla.blit(fondo, (0, 0))
+        mostrar_texto("Puntajes", NEGRO, 300, 30)
+        with open("puntajes.txt", "a+") as archivo:
+            archivo.seek(0) 
+            puntajes = [linea.strip().split(",") for linea in archivo.readlines() if linea.strip()]      
+            puntajes.sort(key=lambda x: x[1], reverse=True)
+        for i in range(min(3, len(puntajes))):
+            nombre, puntos = puntajes[i]
+            mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 300, 150 + i * 30)
+
+       
+        for i in range(len(puntajes), 3):
+            mostrar_texto(f"{i+1}. No hay puntajes", NEGRO, 300, 150 + i * 30)
+       
+        dibujar_boton("Volver", 300, 360, 200, 50, (200, 200, 0), NEGRO)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                if 300 <= x <= 500 and 360 <= y <= 410:
+                    corriendo = False
+
+        pygame.display.flip()
+
+
+def crear_matriz(tamano_matriz):
+    matriz = [] 
+    for _ in range(tamano_matriz):
+        fila = [0] * tamano_matriz 
+        matriz.append(fila) 
+    return matriz
 
 
 
@@ -136,3 +179,62 @@ def dibujar_tablero(matriz, intentos, tamano_matriz)->None:
 
 
 ######################### FUNCIONES AUXILIARES ################################
+def mostrar_texto(texto, color, x, y):
+    texto_renderizado = fuente.render(texto, True, color)
+    pantalla.blit(texto_renderizado, (x, y))
+
+def dibujar_boton(texto, x, y, ancho, alto, color_boton, color_texto):
+    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto),border_radius=85)
+    mostrar_texto(texto, color_texto, x + 20, y + 20) 
+
+
+def mostrar_puntaje(puntaje):
+    fuente = pygame.font.SysFont("Arial", 25)  
+    texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO) 
+    pantalla.blit(texto, (600, 10)) 
+
+def guardar_puntaje(nombre, puntaje):
+    with open("puntajes.txt", "a") as archivo:
+        archivo.write(f"{nombre},{puntaje}\n")
+
+def agregar_mensaje(mensaje):
+    if len(mensajes) >= 3:
+        mensajes.pop(0)  # Elimina el mensaje más antiguo si ya hay 3
+    mensajes.append(mensaje)  # Agrega el nuevo mensaje
+
+def mostrar_mensajes():
+    y_pos = 150  
+    x_pos = 610  
+    fuente_mensajes = pygame.font.SysFont('Arial', 18)  
+    for mensaje in mensajes:
+        texto_renderizado = fuente_mensajes.render(mensaje, True, 'blue')  
+        pantalla.blit(texto_renderizado, (x_pos, y_pos)) 
+        y_pos += 20
+
+
+def mostrar_texto(texto, color, x, y):
+    texto_renderizado = fuente.render(texto, True, color)
+    pantalla.blit(texto_renderizado, (x, y))
+
+
+
+
+def crear_boton(texto, color, x, y, ancho, alto):
+    pygame.draw.rect(pantalla, color, (x, y, ancho, alto))
+    mostrar_texto(texto, BLANCO, x + 10, y + 10)
+
+
+
+def boton_presionado(x, y, ancho, alto, mouse_x, mouse_y):
+    return x < mouse_x < x + ancho and y < mouse_y < y + alto
+
+
+
+def dibujar_boton_musica(x, y, ancho, alto, color_boton, color_texto, music_on):
+    texto = "Música: ON" if music_on else "Música: OFF"
+    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
+    mostrar_texto(texto, color_texto, x + 20, y + 20)
+
+
+
+
