@@ -8,7 +8,8 @@ mensajes = []
 
 
 
-def pedir_nombre(puntaje, pantalla)->str:
+def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
+
     """
     Funcion : Solicita al usuario que ingrese su nombre a través de un campo de texto en la pantalla.
 
@@ -49,7 +50,7 @@ def pedir_nombre(puntaje, pantalla)->str:
         pygame.display.flip()  
         
 
-def poner_naves(matriz, naves)->list:
+def poner_naves(matriz:list, naves:list)->list:
     """
     Funcion :Coloca las naves en un tablero representado por una matriz
 
@@ -95,7 +96,7 @@ def poner_naves(matriz, naves)->list:
     return coordenadas_naves  
 
 
-def dibujar_tablero(matriz, intentos, tamano_matriz)->None:
+def dibujar_tablero(matriz:list, intentos:list, tamano_matriz:int)->None:
     """
     Funcion : Dibuja un tablero de juego en la pantalla de Pygame
 
@@ -128,7 +129,17 @@ def dibujar_tablero(matriz, intentos, tamano_matriz)->None:
 
 
 
-def pantalla_puntajes():
+
+
+def pantalla_puntajes()->None:
+    """
+    Funcion : Muestra una pantalla con los 5 puntajes más altos del juego
+
+    Parámetros: No recibe parámetros
+
+    Retorna: No retorna ningún valor
+    """
+
     corriendo = True
     fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
 
@@ -161,7 +172,19 @@ def pantalla_puntajes():
         pygame.display.flip()
 
 
-def crear_matriz(tamano_matriz):
+
+
+
+def crear_matriz(tamano_matriz:int)->list:
+
+    """
+    Función: Crea una matriz cuadrada 
+
+    Parámetros: El tamaño de la matriz 
+
+    Retorna: Una matriz 
+
+    """
     matriz = [] 
     for _ in range(tamano_matriz):
         fila = [0] * tamano_matriz 
@@ -198,7 +221,7 @@ def guardar_puntaje(nombre, puntaje):
         archivo.write(f"{nombre},{puntaje}\n")
 
 def agregar_mensaje(mensaje):
-    if len(mensajes) >= 3:
+    if len(mensajes) >= 5:
         mensajes.pop(0)  # Elimina el mensaje más antiguo si ya hay 3
     mensajes.append(mensaje)  # Agrega el nuevo mensaje
 
