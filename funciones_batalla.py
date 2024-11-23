@@ -1,6 +1,7 @@
 import pygame
 import random
 import sys
+from configuracion_batalla import *
 
 
 def pedir_nombre(puntaje, pantalla)->str:
@@ -89,3 +90,49 @@ def poner_naves(matriz, naves)->list:
                         colocada = True 
     return coordenadas_naves  
 
+
+def dibujar_tablero(matriz, intentos, tamano_matriz)->None:
+    """
+    Funcion : Dibuja un tablero de juego en la pantalla de Pygame
+
+    Parámetros: Una matriz  que representa el tablero de juego . 
+    Intentos :una segunda matriz de igual tamaño que la primera donde cada celda
+    contiene 1 o 0 
+    tamano_matriz : El tamaño del tablero de juego
+        
+    Retorno : None. 
+
+    """
+   
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz  
+
+    for fila in range(tamano_matriz):
+        for columna in range(tamano_matriz):
+            x = columna * tamano_celda
+            y = fila * tamano_celda      
+            pygame.draw.rect(pantalla, BLANCO, (x, y, tamano_celda, tamano_celda))  # ---se dibuja el fondo blanco de la celda---  
+            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)     # ---se dibuja el borde negro de la celda---
+        
+            if intentos[fila][columna] == 1:     # ---si el disparo da en esta celda , le pego a la nave (pone un uno)---
+                # --- dibuja una X roja que cruza la celda---
+                pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)  
+                pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)  
+          
+            elif intentos[fila][columna] == -1:   # ---si el disparo da en esta celda es un fallo (pone un cero)---
+                centro = (x + tamano_celda // 2, y + tamano_celda // 2)
+                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 2)  # ---dibuja un círculo  en de la celda---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################### FUNCIONES AUXILIARES ################################
