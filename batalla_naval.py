@@ -7,97 +7,15 @@ import sys
 pygame.init()
 
 
+def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
+    """
+    Funcion : Inicia el juego de Batalla Naval, creando y mostrando la matriz del tablero
 
+    Parámetros: El tamaño de la matriz del tablero del juego
 
-def reiniciar_juego(tamano_matriz, nivel):
-    iniciar_juego(tamano_matriz, nivel)
+    Retorno: None. Esta función no devuelve ningún valor
+    """
 
-
-
-
-
-def pantalla_inicio():
-    nivel_predeterminado = "fácil"  
-    music_on = True  
-
-    while True:
-        pantalla.blit(fondo, (0, 0))  
-        mostrar_texto("Batalla Naval", NEGRO, 300, 50) 
-
-        dibujar_boton("Nivel", 300, 140, 200, 60, (150, 0, 200), BLANCO)
-        dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
-        dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
-        dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
-        dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO, music_on)
-
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            if evento.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                if 300 <= x <= 500 and 140 <= y <= 200: 
-                    pantalla_seleccion_nivel() 
-                elif 300 <= x <= 500 and 220 <= y <= 270:  
-                    iniciar_juego(10, nivel=nivel_predeterminado)  
-                elif 300 <= x <= 500 and 290 <= y <= 340:  
-                    pantalla_puntajes()  
-                elif 300 <= x <= 500 and 360 <= y <= 410:  
-                    pygame.quit()
-                    sys.exit()
-                elif 30 <= x <= 230 and 30 <= y <= 80:  
-                    music_on = not music_on 
-     
-                if music_on:
-                    pygame.mixer.music.play(-1, 0.0) 
-                else:
-                    pygame.mixer.music.stop() 
-
-        pygame.display.flip()  
-
-
-
-
-
-def pantalla_seleccion_nivel():
-    corriendo = True  
-    fondo = pygame.image.load('imagenes/fondo1.jpg')  
-    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))  
-    while corriendo:
-        pantalla.blit(fondo, (0, 0))  
-        mostrar_texto("Selecciona el Nivel", NEGRO, 270, 50)  
-        
-      
-        dibujar_boton("Fácil", 300, 150, 200, 50, (0, 200, 0), BLANCO)
-        dibujar_boton("Medio", 300, 220, 200, 50, (0, 0, 200), BLANCO)
-        dibujar_boton("Difícil", 300, 290, 200, 50, (200, 0, 0), BLANCO)
-        
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-
-            if evento.type == pygame.MOUSEBUTTONDOWN: 
-                x, y = pygame.mouse.get_pos()
-                
-                if 300 <= x <= 500 and 150 <= y <= 200:  
-                    iniciar_juego(10, nivel="fácil")  
-                    corriendo = False
-                elif 300 <= x <= 500 and 220 <= y <= 270:  
-                    iniciar_juego(20, nivel="medio")  
-                    corriendo = False
-                elif 300 <= x <= 500 and 290 <= y <= 340:
-                    iniciar_juego(40, nivel="difícil")  
-                    corriendo = False    
-        pygame.display.flip()  
- 
-
-
-
-
-
-
-def iniciar_juego(tamano_matriz, nivel="fácil"):
     # Crea la matriz 
     matriz = crear_matriz(tamano_matriz)
     intentos = crear_matriz(tamano_matriz)
@@ -150,7 +68,6 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                                     agregar_mensaje(f"Nave hundida! +{len(nave)*10} puntos")  # Agregar mensaje de hundimiento
                                     print(f"Nave hundida! +{len(nave)*10} puntos")
                                     coordenadas_naves.remove(nave)  # ---Borra la nave hundida---
-
                         else:  
                             intentos[fila][columna] = -1
                             puntaje -= 1 #---Le resta uno si da en el agua---
@@ -158,11 +75,21 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
                             agregar_mensaje(f"Fallo en ({fila}, {columna})") 
                             print(f"Fallo en ({fila}, {columna})")
 
-                
+                # ---Verificar si se hace clic en el botón de reiniciar---
                 if 600 <= x <= 750 and 500 <= y <= 550:  
-                    reiniciar_juego(tamano_matriz, nivel)
+                    # Aquí reiniciamos el puntaje y otros parámetros sin cambiar la pantalla
+                    puntaje = 0
+                    intentos = crear_matriz(tamano_matriz)  # Reiniciar la matriz de intentos
+                    aciertos = []  # Reiniciar los aciertos
+                        # Limpiar las coordenadas de las naves para evitar duplicación
+                    coordenadas_naves.clear() 
+                    coordenadas_naves = poner_naves(matriz, naves)  # Reponer las naves
+                    agregar_mensaje("Juego reiniciado!")  # Mensaje de confirmación
+                    print("Juego reiniciado")
+
+                # ---Verificar si se hace clic en el botón de inicio---
                 elif 600 <= x <= 750 and 300 <= y <= 400:
-                    pantalla_inicio()
+                    mostrar_pantalla("inicio")  # Volver a la pantalla de inicio
                 elif 600 <= x <= 750 and 440 <= y <= 490: 
                     pygame.quit()
                     sys.exit()
@@ -170,7 +97,8 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
         # ---Verifica si hundieron todas las naves o si se clikearon todos los casilleros---
         if len(coordenadas_naves) == 0 or casillas_clicadas == total_casillas:
             guardar_puntaje(pedir_nombre(puntaje, pantalla), puntaje)  
-            reiniciar_juego(tamano_matriz, nivel)  
+            mostrar_pantalla("inicio")
+ 
 
         
         pantalla.fill(BLANCO) 
@@ -186,5 +114,76 @@ def iniciar_juego(tamano_matriz, nivel="fácil"):
 
 
 
+def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music_on:bool=True)->None:
 
-pantalla_inicio()
+    """
+    Función: Muestra  la interfaz gráfica del juego
+
+    Parámetros: Tipo de pantalla que se debe mostrar (por defecto en facil)
+    music_on (bool): Por defecto, está activada.
+
+    Retorno: None: Esta función no devuelve ningún valor
+    """
+    corriendo = True
+    fondo = pygame.image.load('imagenes/fondo1.jpg')
+    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+    
+    while corriendo:
+        pantalla.blit(fondo, (0, 0))
+        
+        if tipo_pantalla == "inicio":
+            mostrar_texto("Batalla Naval", NEGRO, 300, 50)
+            dibujar_boton("Nivel", 300, 140, 200, 60, (150, 0, 200), BLANCO)
+            dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
+            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
+            dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
+            dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO, music_on)
+        elif tipo_pantalla == "seleccion_nivel":
+            mostrar_texto("Selecciona el Nivel", NEGRO, 270, 50)
+            dibujar_boton("Fácil", 300, 150, 200, 50, (0, 200, 0), BLANCO)
+            dibujar_boton("Medio", 300, 220, 200, 50, (0, 0, 200), BLANCO)
+            dibujar_boton("Difícil", 300, 290, 200, 50, (200, 0, 0), BLANCO)
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if evento.type == pygame.MOUSEBUTTONDOWN:
+                x, y = pygame.mouse.get_pos()
+                
+                if tipo_pantalla == "inicio":
+                    if 300 <= x <= 500 and 140 <= y <= 200:  
+                        mostrar_pantalla("seleccion_nivel", nivel_predeterminado, music_on)
+                    elif 300 <= x <= 500 and 220 <= y <= 270:  
+                        iniciar_juego(10, nivel=nivel_predeterminado)
+                        corriendo = False
+                    elif 300 <= x <= 500 and 290 <= y <= 340:  
+                        pantalla_puntajes()
+                    elif 300 <= x <= 500 and 360 <= y <= 410:  
+                        pygame.quit()
+                        sys.exit()
+                    elif 30 <= x <= 230 and 30 <= y <= 80:  
+                        music_on = not music_on
+                        if music_on:
+                            pygame.mixer.music.play(-1, 0.0)
+                        else:
+                            pygame.mixer.music.stop()
+                elif tipo_pantalla == "seleccion_nivel":
+                    if 300 <= x <= 500 and 150 <= y <= 200:  
+                        iniciar_juego(10, nivel="fácil")
+                        corriendo = False
+                    elif 300 <= x <= 500 and 220 <= y <= 270:  
+                        iniciar_juego(20, nivel="medio")
+                        corriendo = False
+                    elif 300 <= x <= 500 and 290 <= y <= 340:  
+                        iniciar_juego(40, nivel="difícil")
+                        corriendo = False
+        
+        pygame.display.flip()
+
+
+
+mostrar_pantalla("inicio")
+
+mostrar_pantalla("seleccion_nivel")

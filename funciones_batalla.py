@@ -2,6 +2,9 @@ import pygame
 import random
 import sys
 from configuracion_batalla import *
+
+
+
 pygame.init()
 fuente = pygame.font.SysFont('Arial', 25)
 mensajes = []
@@ -50,6 +53,7 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
         pygame.display.flip()  
         
 
+
 def poner_naves(matriz:list, naves:list)->list:
     """
     Funcion :Coloca las naves en un tablero representado por una matriz
@@ -94,6 +98,7 @@ def poner_naves(matriz:list, naves:list)->list:
                         coordenadas_naves.append([(fila + i, columna) for i in range(largo)])
                         colocada = True 
     return coordenadas_naves  
+
 
 
 def dibujar_tablero(matriz:list, intentos:list, tamano_matriz:int)->None:
@@ -179,11 +184,8 @@ def crear_matriz(tamano_matriz:int)->list:
 
     """
     Función: Crea una matriz cuadrada 
-
     Parámetros: El tamaño de la matriz 
-
     Retorna: Una matriz 
-
     """
     matriz = [] 
     for _ in range(tamano_matriz):
@@ -202,30 +204,81 @@ def crear_matriz(tamano_matriz:int)->list:
 
 
 ######################### FUNCIONES AUXILIARES ################################
-def mostrar_texto(texto, color, x, y):
+def mostrar_texto(texto: str, color: tuple, x: int, y: int) -> None:
+    """
+    Función: Muestra un texto en la pantalla.
+    Parámetros:
+    texto (str): El texto a mostrar.
+    color (tuple): Color del texto en formato RGB.
+    x (int): Posición horizontal del texto.
+    y (int): Posición vertical del texto.
+    Retorno: None
+    """
     texto_renderizado = fuente.render(texto, True, color)
     pantalla.blit(texto_renderizado, (x, y))
 
-def dibujar_boton(texto, x, y, ancho, alto, color_boton, color_texto):
+
+
+def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple) -> None:
+    """
+    Función: Dibuja un botón con texto en la pantalla.
+    Parámetros:
+    texto : El texto que aparece en el botón.
+    x : Posición horizontal del botón.
+    y : Posición vertical del botón.
+    ancho: Ancho del botón.
+    alto : Alto del botón.
+    color_boton: Color de fondo del botón e
+    color_texto : Color del texto 
+
+    Retorno:None
+    """
     pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto),border_radius=85)
     mostrar_texto(texto, color_texto, x + 20, y + 20) 
 
 
-def mostrar_puntaje(puntaje):
+
+
+def mostrar_puntaje(puntaje: int) -> None:
+    """
+    Función: Muestra el puntaje en la pantalla.
+    Parámetros:El puntaje a mostrar en pantalla.
+    Retorno:None
+    """
     fuente = pygame.font.SysFont("Arial", 25)  
     texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO) 
     pantalla.blit(texto, (600, 10)) 
 
-def guardar_puntaje(nombre, puntaje):
+
+
+def guardar_puntaje(nombre: str, puntaje: int) -> None:
+    """
+    Función: Guarda el puntaje en un archivo de texto.
+    Parámetros:El nombre del jugador y el puntaje obtenido por el jugador.
+    Retorno: None
+    """
     with open("puntajes.txt", "a") as archivo:
         archivo.write(f"{nombre},{puntaje}\n")
 
-def agregar_mensaje(mensaje):
+
+
+def agregar_mensaje(mensaje: str) -> None:
+    """
+    Función: Agrega un mensaje a la lista de mensajes, eliminando el más antiguo si hay más de 5 mensajes.
+    Parámetros:El mensaje a agregar a la lista de mensajes.
+    Retorno:None
+    """
     if len(mensajes) >= 5:
         mensajes.pop(0)  # Elimina el mensaje más antiguo si ya hay 3
     mensajes.append(mensaje)  # Agrega el nuevo mensaje
 
-def mostrar_mensajes():
+
+def mostrar_mensajes() -> None:
+    """
+    Función: Muestra los mensajes almacenados en la lista de mensajes en la pantalla
+    Parámetros: Ninguno
+    Retorno: None
+    """
     y_pos = 150  
     x_pos = 610  
     fuente_mensajes = pygame.font.SysFont('Arial', 18)  
@@ -235,29 +288,59 @@ def mostrar_mensajes():
         y_pos += 20
 
 
-def mostrar_texto(texto, color, x, y):
-    texto_renderizado = fuente.render(texto, True, color)
-    pantalla.blit(texto_renderizado, (x, y))
 
+def crear_boton(texto: str, color: tuple, x: int, y: int, ancho: int, alto: int) -> None:
+    """
+    Función: Dibuja un botón en la pantalla con un texto dentro.
 
+    Parámetros:
+    texto : El texto que aparecerá en el botón.
+    color : El color del botón 
+    x : La coordenada x en la pantalla donde se dibujará el botón.
+    y : La coordenada y en la pantalla donde se dibujará el botón.
+    ancho : El ancho del botón.
+    alto: El alto del botón.
 
-
-def crear_boton(texto, color, x, y, ancho, alto):
+    Retorno: None
+    """
     pygame.draw.rect(pantalla, color, (x, y, ancho, alto))
     mostrar_texto(texto, BLANCO, x + 10, y + 10)
 
 
 
-def boton_presionado(x, y, ancho, alto, mouse_x, mouse_y):
+def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_y: int) -> bool:
+    """
+    Función: Verifica si un clic de ratón ha ocurrido dentro de las coordenadas de un botón
+    Parámetros:
+    x : La coordenada x de la esquina superior izquierda del botón.
+    y : La coordenada y de la esquina superior izquierda del botón.
+    ancho : El ancho del botón.
+    alto : El alto del botón.
+    mouse_x : La coordenada x del clic del ratón.
+    mouse_y : La coordenada y del clic del ratón.
+    Retorno:bool: Devuelve True si el clic del ratón está dentro de los límites del botón, de lo contrario False.
+    """
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
 
+def dibujar_boton_musica(x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple, music_on: bool) -> None:
+    """
+    Función: Dibuja un botón en la pantalla que indica si la música está activada o desactivada.
 
-def dibujar_boton_musica(x, y, ancho, alto, color_boton, color_texto, music_on):
+    Parámetros:
+    x : La coordenada x de la esquina superior izquierda del botón.
+    y : La coordenada y de la esquina superior izquierda del botón.
+    ancho : El ancho del botón.
+    alto : El alto del botón.
+    color_boton: El color del botón (en formato RGB).
+    color_texto : El color del texto (en formato RGB).
+    music_on : Estado de la música. True si está activada, False si está desactivada.
+
+    Retorno: Esta función no devuelve ningún valor.
+    """
     texto = "Música: ON" if music_on else "Música: OFF"
     pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
     mostrar_texto(texto, color_texto, x + 20, y + 20)
-
 
 
 
