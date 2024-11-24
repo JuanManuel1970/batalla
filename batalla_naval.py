@@ -82,6 +82,7 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                     intentos = crear_matriz(tamano_matriz)  # Reiniciar la matriz de intentos
                     aciertos = []  # Reiniciar los aciertos
                         # Limpiar las coordenadas de las naves para evitar duplicación
+                    matriz = crear_matriz(tamano_matriz)
                     coordenadas_naves.clear() 
                     coordenadas_naves = poner_naves(matriz, naves)  # Reponer las naves
                     agregar_mensaje("Juego reiniciado!")  # Mensaje de confirmación
