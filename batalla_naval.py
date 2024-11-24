@@ -7,8 +7,7 @@ import sys
 pygame.init()
 
 
-puntaje = 0 
-fuente = pygame.font.SysFont('Arial', 25)
+
 
 def reiniciar_juego(tamano_matriz, nivel):
     iniciar_juego(tamano_matriz, nivel)

@@ -5,7 +5,7 @@ from configuracion_batalla import *
 pygame.init()
 fuente = pygame.font.SysFont('Arial', 25)
 mensajes = []
-
+puntaje = 0 
 
 
 def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
