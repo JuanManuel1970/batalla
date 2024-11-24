@@ -116,13 +116,10 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
 
 
 def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music_on:bool=True)->None:
-
     """
     Función: Muestra  la interfaz gráfica del juego
-
     Parámetros: Tipo de pantalla que se debe mostrar (por defecto en facil)
     music_on (bool): Por defecto, está activada.
-
     Retorno: None: Esta función no devuelve ningún valor
     """
     corriendo = True
@@ -138,7 +135,11 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO)
             dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO)
             dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO)
-            dibujar_boton_musica(30, 30, 200, 50, (0, 200, 0), BLANCO, music_on)
+            
+            # Mostrar el botón de música con "On" o "Off"
+            texto_musica = "Música: On" if music_on else "Música: Off"
+            dibujar_boton(texto_musica, 0, 0, 200, 50, (0, 128, 0), BLANCO)
+
         elif tipo_pantalla == "seleccion_nivel":
             mostrar_texto("Selecciona el Nivel", NEGRO, 270, 50)
             dibujar_boton("Fácil", 300, 150, 200, 50, (0, 200, 0), BLANCO)
@@ -151,37 +152,62 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()
-                
+                x, y = pygame.mouse.get_pos()  # Solo se obtiene en este evento
+                print(f"Se ha hecho clic en las coordenadas: ({x}, {y})")
+
                 if tipo_pantalla == "inicio":
-                    if 300 <= x <= 500 and 140 <= y <= 200:  
+                    # Verificamos si se está clicando en el botón de "Nivel"
+                    if 300 <= x <= 500 and 140 <= y <= 200:
+                        print("Botón 'Nivel' presionado")
                         mostrar_pantalla("seleccion_nivel", nivel_predeterminado, music_on)
-                    elif 300 <= x <= 500 and 220 <= y <= 270:  
+                    
+                    # Verificamos si se está clicando en el botón de "Jugar"
+                    elif 300 <= x <= 500 and 220 <= y <= 270:
+                        print("Botón 'Jugar' presionado")
                         iniciar_juego(10, nivel=nivel_predeterminado)
                         corriendo = False
-                    elif 300 <= x <= 500 and 290 <= y <= 340:  
+                    
+                    # Verificamos si se está clicando en el botón de "Ver Puntajes"
+                    elif 300 <= x <= 500 and 290 <= y <= 340:
+                        print("Botón 'Ver Puntajes' presionado")
                         pantalla_puntajes()
-                    elif 300 <= x <= 500 and 360 <= y <= 410:  
+                    
+                    # Verificamos si se está clicando en el botón de "Salir"
+                    elif 300 <= x <= 500 and 360 <= y <= 410:
+                        print("Botón 'Salir' presionado")
                         pygame.quit()
                         sys.exit()
-                    elif 30 <= x <= 230 and 30 <= y <= 80:  
+
+                    # Verificamos si se está clicando en el botón de "Música"
+                    elif 0 <= x <= 200 and 0 <= y <= 50:
+                        print(f"Botón 'Música' presionado, estado actual de música: {music_on}")
                         music_on = not music_on
                         if music_on:
                             pygame.mixer.music.play(-1, 0.0)
                         else:
                             pygame.mixer.music.stop()
+
                 elif tipo_pantalla == "seleccion_nivel":
-                    if 300 <= x <= 500 and 150 <= y <= 200:  
+                    # Verificamos si se está clicando en el botón de "Fácil"
+                    if 300 <= x <= 500 and 150 <= y <= 200:
+                        print("Botón 'Fácil' presionado")
                         iniciar_juego(10, nivel="fácil")
                         corriendo = False
-                    elif 300 <= x <= 500 and 220 <= y <= 270:  
+                    
+                    # Verificamos si se está clicando en el botón de "Medio"
+                    elif 300 <= x <= 500 and 220 <= y <= 270:
+                        print("Botón 'Medio' presionado")
                         iniciar_juego(20, nivel="medio")
                         corriendo = False
-                    elif 300 <= x <= 500 and 290 <= y <= 340:  
+                    
+                    # Verificamos si se está clicando en el botón de "Difícil"
+                    elif 300 <= x <= 500 and 290 <= y <= 340:
+                        print("Botón 'Difícil' presionado")
                         iniciar_juego(40, nivel="difícil")
                         corriendo = False
         
         pygame.display.flip()
+
 
 
 

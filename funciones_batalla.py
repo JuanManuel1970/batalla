@@ -204,38 +204,19 @@ def crear_matriz(tamano_matriz:int)->list:
 
 
 ######################### FUNCIONES AUXILIARES ################################
+
 def mostrar_texto(texto: str, color: tuple, x: int, y: int) -> None:
     """
     Función: Muestra un texto en la pantalla.
     Parámetros:
-    texto (str): El texto a mostrar.
-    color (tuple): Color del texto en formato RGB.
-    x (int): Posición horizontal del texto.
-    y (int): Posición vertical del texto.
+    texto : El texto a mostrar.
+    color: Color del texto en formato RGB.
+    x : Posición horizontal del texto.
+    y : Posición vertical del texto.
     Retorno: None
     """
     texto_renderizado = fuente.render(texto, True, color)
     pantalla.blit(texto_renderizado, (x, y))
-
-
-
-def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple) -> None:
-    """
-    Función: Dibuja un botón con texto en la pantalla.
-    Parámetros:
-    texto : El texto que aparece en el botón.
-    x : Posición horizontal del botón.
-    y : Posición vertical del botón.
-    ancho: Ancho del botón.
-    alto : Alto del botón.
-    color_boton: Color de fondo del botón e
-    color_texto : Color del texto 
-
-    Retorno:None
-    """
-    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto),border_radius=85)
-    mostrar_texto(texto, color_texto, x + 20, y + 20) 
-
 
 
 
@@ -289,25 +270,6 @@ def mostrar_mensajes() -> None:
 
 
 
-def crear_boton(texto: str, color: tuple, x: int, y: int, ancho: int, alto: int) -> None:
-    """
-    Función: Dibuja un botón en la pantalla con un texto dentro.
-
-    Parámetros:
-    texto : El texto que aparecerá en el botón.
-    color : El color del botón 
-    x : La coordenada x en la pantalla donde se dibujará el botón.
-    y : La coordenada y en la pantalla donde se dibujará el botón.
-    ancho : El ancho del botón.
-    alto: El alto del botón.
-
-    Retorno: None
-    """
-    pygame.draw.rect(pantalla, color, (x, y, ancho, alto))
-    mostrar_texto(texto, BLANCO, x + 10, y + 10)
-
-
-
 def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_y: int) -> bool:
     """
     Función: Verifica si un clic de ratón ha ocurrido dentro de las coordenadas de un botón
@@ -322,25 +284,28 @@ def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_
     """
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
-
-def dibujar_boton_musica(x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple, music_on: bool) -> None:
+def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple, music_on: bool = None) -> None:
     """
-    Función: Dibuja un botón en la pantalla que indica si la música está activada o desactivada.
+    Función: Dibuja un botón en la pantalla con texto y, en el caso de los botones de música,
+    indica si la música está activada o desactivada.
 
     Parámetros:
-    x : La coordenada x de la esquina superior izquierda del botón.
-    y : La coordenada y de la esquina superior izquierda del botón.
+    texto : El texto que aparecerá en el botón.
+    x : La coordenada x en la pantalla donde se dibujará el botón.
+    y : La coordenada y en la pantalla donde se dibujará el botón.
     ancho : El ancho del botón.
-    alto : El alto del botón.
-    color_boton: El color del botón (en formato RGB).
-    color_texto : El color del texto (en formato RGB).
-    music_on : Estado de la música. True si está activada, False si está desactivada.
+    alto: El alto del botón.
+    color_boton : El color de fondo del botón.
+    color_texto : El color del texto dentro del botón.
+    music_on : Parámetro opcional que indica si la música está activada o desactivada (solo se usa para botones de música).
 
-    Retorno: Esta función no devuelve ningún valor.
+    Retorno: None
     """
-    texto = "Música: ON" if music_on else "Música: OFF"
-    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto))
+    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto), border_radius=85)
+    if music_on is not None:  # Si se pasa el parámetro music_on, es un botón de música
+        texto = "Música: ON" if music_on else "Música: OFF"
     mostrar_texto(texto, color_texto, x + 20, y + 20)
+
 
 
 
