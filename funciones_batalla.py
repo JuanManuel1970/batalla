@@ -162,8 +162,14 @@ def pantalla_puntajes()->None:
        
         for i in range(len(puntajes), 3):
             mostrar_texto(f"{i+1}. No hay puntajes", NEGRO, 300, 150 + i * 30)
+
+        # Obtener la posición del mouse
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        # Verificar si el mouse está sobre el botón "Volver"
+        hover_volver = 300 <= mouse_x <= 500 and 360 <= mouse_y <= 410
        
-        dibujar_boton("Volver", 300, 360, 200, 50, (200, 200, 0), NEGRO)
+        dibujar_boton("Volver", 300, 360, 200, 50, color_base, color_texto, hover=hover_volver)
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -304,9 +310,11 @@ def dibujar_boton(texto, x, y, ancho, alto, color_base, color_texto, hover=False
     """
     # Cambiar color si el botón está en estado hover
     if hover:
-        color_base = (min(color_base[0] + 40, 255),  # Aumenta el componente R
-                      min(color_base[1] + 40, 255),  # Aumenta el componente G
-                      min(color_base[2] + 40, 255))  # Aumenta el componente B
+        # Crear un color base más saturado o brillante
+        color_satinado = (min(color_base[0] + 40, 255),  # Aumenta el componente R
+                          min(color_base[1] + 40, 255),  # Aumenta el componente G
+                          min(color_base[2] + 40, 255))  # Aumenta el componente B
+        color_base = color_satinado
 
     # Dibujar el borde redondeado del botón
     pygame.draw.rect(pantalla, color_borde, (x - 1, y - 1, ancho + 10, alto + 10), border_radius=radio_bordes)

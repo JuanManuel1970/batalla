@@ -95,6 +95,14 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                     pygame.quit()
                     sys.exit()
 
+            # Obtener las coordenadas del mouse
+        mouse_x, mouse_y = pygame.mouse.get_pos()
+
+        # Calcular el estado hover para cada botón
+        hover_salir = 600 <= mouse_x <= 750 and 440 <= mouse_y <= 490
+        hover_reiniciar = 600 <= mouse_x <= 750 and 500 <= mouse_y <= 550
+        hover_inicio = 600 <= mouse_x <= 750 and 300 <= mouse_y <= 400
+
         # ---Verifica si hundieron todas las naves o si se clikearon todos los casilleros---
         if len(coordenadas_naves) == 0 or casillas_clicadas == total_casillas:
             guardar_puntaje(pedir_nombre(puntaje, pantalla), puntaje)  
@@ -106,9 +114,11 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
         mostrar_puntaje(puntaje)  
         dibujar_tablero(matriz, intentos, tamano_matriz)  
         mostrar_mensajes() 
-        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO)  
-        dibujar_boton("Reiniciar", 600, 500, 150, 50, (200, 200, 0), NEGRO)  
-        dibujar_boton("Inicio", 600, 300, 150, 50, (180, 200, 120), NEGRO)  
+        # Dibujar los botones con efecto hover
+        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO, hover=hover_salir)  
+        dibujar_boton("Reiniciar", 600, 500, 150, 50, color_base, color_texto, hover=hover_reiniciar)  
+        dibujar_boton("Inicio", 600, 300, 150, 50, color_base, color_texto, hover=hover_inicio)
+ 
         pygame.display.flip() 
 
 
@@ -133,11 +143,12 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
         
         if tipo_pantalla == "inicio":
             mostrar_texto("Batalla Naval", NEGRO, 300, 50)
-            dibujar_boton("Nivel", 300, 140, 200, 60, (150, 0, 200), BLANCO, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
-            dibujar_boton("Jugar", 300, 220, 200, 50, (0, 0, 200), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (200, 200, 0), BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
-            dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), BLANCO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
-            
+ 
+            dibujar_boton("Nivel", 300, 140, 200, 60, color_base, color_texto, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
+            dibujar_boton("Jugar", 300, 220, 200, 50, color_base, color_texto, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, color_base, color_texto, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), NEGRO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
+
             # Mostrar el botón de música con "On" o "Off"
             texto_musica = "Música: On" if music_on else "Música: Off"
             # Definir la condición de hover para el botón "texto_musica"
@@ -146,9 +157,9 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             dibujar_boton( texto_musica, 0 ,0, 200, 50, (0, 128, 0), BLANCO,hover=hover_texto_musica  )
 
         elif tipo_pantalla == "seleccion_nivel":
-            dibujar_boton("Fácil", 300, 150, 200, 50, (0, 200, 0), BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
-            dibujar_boton("Medio", 300, 220, 200, 50, (0, 0, 200), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Difícil", 300, 290, 200, 50, (200, 0, 0), BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Fácil", 300, 150, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
+            dibujar_boton("Medio", 300, 220, 200, 50,color_base, BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Difícil", 300, 290, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
 
 
         for evento in pygame.event.get():
