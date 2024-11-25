@@ -133,11 +133,15 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
     Retorno: None: Esta función no devuelve ningún valor
     """
     corriendo = True
-    fondo = pygame.image.load('imagenes/fondo2.jpg')
-    fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+
     
     while corriendo:
-        pantalla.blit(fondo, (0, 0))
+                # Cargar fondo diferente para la pantalla de selección de nivel
+        if tipo_pantalla == "seleccion_nivel":
+            fondo_seleccion_nivel = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
+            pantalla.blit(fondo_seleccion_nivel, (0, 0))
+        else:
+            pantalla.blit(fondo, (0, 0))  # Fondo por defecto para otras pantallas
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         
@@ -160,7 +164,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             dibujar_boton("Fácil", 300, 150, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
             dibujar_boton("Medio", 300, 220, 200, 50,color_base, BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
             dibujar_boton("Difícil", 300, 290, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
-
+    
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
