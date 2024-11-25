@@ -100,37 +100,45 @@ def poner_naves(matriz:list, naves:list)->list:
     return coordenadas_naves  
 
 
-
-def dibujar_tablero(matriz:list, intentos:list, tamano_matriz:int)->None:
+def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
     """
-    Funcion : Dibuja un tablero de juego en la pantalla de Pygame
+    Función: Dibuja un tablero de juego en la pantalla de Pygame con una imagen que cubre todo el tablero.
 
-    Parámetros: Una matriz  que representa el tablero de juego . 
-    Intentos :una segunda matriz de igual tamaño que la primera donde cada celda
-    contiene 1 o 0 
-    tamano_matriz : El tamaño del tablero de juego
+    Parámetros:
+        - matriz: Una matriz que representa el tablero de juego.
+        - intentos: Una segunda matriz de igual tamaño que la primera donde cada celda contiene 1, 0 o -1.
+        - tamano_matriz: El tamaño del tablero de juego.
         
-    Retorno : None. 
-
+    Retorno: None.
     """
-   
-    tamano_celda = min(ANCHO, ALTO) // tamano_matriz  
+    tamano_celda = min(ANCHO, ALTO) // tamano_matriz
+    tamano_tablero = tamano_celda * tamano_matriz  # Tamaño total del tablero
 
+    # Cargar y ajustar la imagen para cubrir el tablero completo
+    imagen_tablero = pygame.image.load("imagenes/fondo3.jpg")
+    imagen_tablero = pygame.transform.scale(imagen_tablero, (tamano_tablero, tamano_tablero))
+
+    # Dibujar la imagen del tablero
+    pantalla.blit(imagen_tablero, (0, 0))
+
+    # Dibujar las celdas con bordes y marcas (intentos)
     for fila in range(tamano_matriz):
         for columna in range(tamano_matriz):
             x = columna * tamano_celda
-            y = fila * tamano_celda      
-            pygame.draw.rect(pantalla, BLANCO, (x, y, tamano_celda, tamano_celda))  # ---se dibuja el fondo blanco de la celda---  
-            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)     # ---se dibuja el borde negro de la celda---
-        
-            if intentos[fila][columna] == 1:     # ---si el disparo da en esta celda , le pego a la nave (pone un uno)---
-                # --- dibuja una X roja que cruza la celda---
-                pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)  
-                pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)  
-          
-            elif intentos[fila][columna] == -1:   # ---si el disparo da en esta celda es un fallo (pone un cero)---
+            y = fila * tamano_celda
+
+            # Dibujar el borde negro de cada celda
+            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)
+
+            if intentos[fila][columna] == 1:  # Si hay un disparo acertado
+                # Dibujar una X roja
+                pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)
+                pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)
+            elif intentos[fila][columna] == -1:  # Si hay un disparo fallido
+                # Dibujar un círculo azul
                 centro = (x + tamano_celda // 2, y + tamano_celda // 2)
-                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 2)  # ---dibuja un círculo  en de la celda---
+                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 2)
+
 
 
 
