@@ -184,7 +184,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
                     # Verificamos si se está clicando en el botón de "Ver Puntajes"
                     elif 300 <= x <= 500 and 290 <= y <= 340:
 
-                        pantalla_puntajes()
+                        mostrar_pantalla_puntajes()
                     
                     # Verificamos si se está clicando en el botón de "Salir"
                     elif 300 <= x <= 500 and 360 <= y <= 410:

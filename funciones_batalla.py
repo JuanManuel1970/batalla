@@ -136,7 +136,7 @@ def dibujar_tablero(matriz:list, intentos:list, tamano_matriz:int)->None:
 
 
 
-def pantalla_puntajes()->None:
+def mostrar_pantalla_puntajes()->None:
     """
     Funcion : Muestra una pantalla con los 5 puntajes más altos del juego
 
@@ -304,36 +304,35 @@ def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
 
-def dibujar_boton(texto, x, y, ancho, alto, color_base, color_texto, hover=False, color_borde=(0, 0, 0), radio_bordes=8):
+def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_base: tuple, color_texto: tuple, hover: bool = False, color_borde: tuple = (0, 0, 0), radio_bordes: int = 8) -> None:
     """
     Dibuja un botón redondeado con borde y texto, y opcionalmente cambia de color si el mouse está sobre él.
     
     Parámetros:
-    texto (str): Texto a mostrar en el botón.
-    x, y (int): Coordenadas de la esquina superior izquierda del botón.
-    ancho, alto (int): Dimensiones del botón.
-    color_base (tuple): Color principal del botón.
-    color_texto (tuple): Color del texto.
-    hover (bool): Indica si el botón está en estado "hover" (cursor encima).
-    color_borde (tuple): Color del borde del botón.
-    radio_bordes (int): Radio de los bordes redondeados.
+    texto (: Texto a mostrar en el botón.
+    x, y : Coordenadas de la esquina superior izquierda del botón.
+    ancho, alto: Dimensiones del botón.
+    color_base: Color principal del botón.
+    color_texto: Color del texto.
+    hover : Indica si el botón está en estado "hover" (cursor encima).
+    color_borde : Color del borde del botón.
+    radio_bordes: Radio de los bordes redondeados.
     """
-    # Cambiar color si el botón está en estado hover
+   
     if hover:
-        # Crear un color base más suave y menos saturado
-        color_satinado = (min(color_base[0] + 20, 255),  # Aumenta el componente R en menor medida
-                          min(color_base[1] + 20, 255),  # Aumenta el componente G en menor medida
-                          min(color_base[2] + 20, 255))  # Aumenta el componente B en menor medida
+      
+        color_satinado = (min(color_base[0] + 20, 255),  
+                          min(color_base[1] + 20, 255),  
+                          min(color_base[2] + 20, 255))  
         color_base = color_satinado
 
-    # Dibujar el borde redondeado del botón con un grosor más pequeño
+    
     pygame.draw.rect(pantalla, color_borde, (x - 1, y - 1, ancho + 6, alto + 6), border_radius=radio_bordes)
 
     # Dibujar el rectángulo del botón con bordes redondeados
     pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto), border_radius=radio_bordes)
 
-    # Agregar texto centrado
-    fuente = pygame.font.Font(None, 36)  # Tamaño de fuente ajustable
+    fuente = pygame.font.Font(None, 36)  
     texto_superficie = fuente.render(texto, True, color_texto)
     texto_rect = texto_superficie.get_rect(center=(x + ancho // 2, y + alto // 2))
     pantalla.blit(texto_superficie, texto_rect)
