@@ -205,7 +205,7 @@ def crear_matriz(tamano_matriz:int)->list:
 
 ######################### FUNCIONES AUXILIARES ################################
 
-def mostrar_texto(texto: str, color: tuple, x: int, y: int) -> None:
+def mostrar_texto(texto: str, color: tuple, x: int, y: int, centrado: bool = False) -> None:
     """
     Función: Muestra un texto en la pantalla.
     Parámetros:
@@ -215,8 +215,10 @@ def mostrar_texto(texto: str, color: tuple, x: int, y: int) -> None:
     y : Posición vertical del texto.
     Retorno: None
     """
+    fuente = pygame.font.Font(None, 36)  # Fuente y tamaño
     texto_renderizado = fuente.render(texto, True, color)
-    pantalla.blit(texto_renderizado, (x, y))
+    texto_rect = texto_renderizado.get_rect(center=(x, y) if centrado else (0, 0))
+    pantalla.blit(texto_renderizado, texto_rect if centrado else (x, y))
 
 
 
@@ -284,28 +286,36 @@ def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_
     """
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
-def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_boton: tuple, color_texto: tuple, music_on: bool = None) -> None:
-    """
-    Función: Dibuja un botón en la pantalla con texto y, en el caso de los botones de música,
-    indica si la música está activada o desactivada.
 
+
+def dibujar_boton(texto, x, y, ancho, alto, color_base, color_texto, hover=False, color_borde=(0, 0, 0), radio_bordes=15):
+    """
+    Dibuja un botón redondeado con borde y texto, y opcionalmente cambia de color si el mouse está sobre él.
+    
     Parámetros:
-    texto : El texto que aparecerá en el botón.
-    x : La coordenada x en la pantalla donde se dibujará el botón.
-    y : La coordenada y en la pantalla donde se dibujará el botón.
-    ancho : El ancho del botón.
-    alto: El alto del botón.
-    color_boton : El color de fondo del botón.
-    color_texto : El color del texto dentro del botón.
-    music_on : Parámetro opcional que indica si la música está activada o desactivada (solo se usa para botones de música).
-
-    Retorno: None
+    texto (str): Texto a mostrar en el botón.
+    x, y (int): Coordenadas de la esquina superior izquierda del botón.
+    ancho, alto (int): Dimensiones del botón.
+    color_base (tuple): Color principal del botón.
+    color_texto (tuple): Color del texto.
+    hover (bool): Indica si el botón está en estado "hover" (cursor encima).
+    color_borde (tuple): Color del borde del botón.
+    radio_bordes (int): Radio de los bordes redondeados.
     """
-    pygame.draw.rect(pantalla, color_boton, (x, y, ancho, alto), border_radius=85)
-    if music_on is not None:  # Si se pasa el parámetro music_on, es un botón de música
-        texto = "Música: ON" if music_on else "Música: OFF"
-    mostrar_texto(texto, color_texto, x + 20, y + 20)
+    # Cambiar color si el botón está en estado hover
+    if hover:
+        color_base = (min(color_base[0] + 40, 255),  # Aumenta el componente R
+                      min(color_base[1] + 40, 255),  # Aumenta el componente G
+                      min(color_base[2] + 40, 255))  # Aumenta el componente B
 
+    # Dibujar el borde redondeado del botón
+    pygame.draw.rect(pantalla, color_borde, (x - 1, y - 1, ancho + 10, alto + 10), border_radius=radio_bordes)
 
+    # Dibujar el rectángulo del botón con bordes redondeados
+    pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto), border_radius=radio_bordes)
 
-
+    # Agregar texto centrado
+    fuente = pygame.font.Font(None, 36)  # Tamaño de fuente ajustable
+    texto_superficie = fuente.render(texto, True, color_texto)
+    texto_rect = texto_superficie.get_rect(center=(x + ancho // 2, y + alto // 2))
+    pantalla.blit(texto_superficie, texto_rect)
