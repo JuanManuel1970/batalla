@@ -146,7 +146,7 @@ def mostrar_pantalla_puntajes()->None:
     """
 
     corriendo = True
-    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
+    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo1.jpg'), (ANCHO, ALTO))
 
     while corriendo:
         pantalla.blit(fondo, (0, 0))

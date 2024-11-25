@@ -37,3 +37,4 @@ fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
 
 
+

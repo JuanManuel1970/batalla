@@ -133,7 +133,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
     Retorno: None: Esta función no devuelve ningún valor
     """
     corriendo = True
-    fondo = pygame.image.load('imagenes/fondo1.jpg')
+    fondo = pygame.image.load('imagenes/fondo2.jpg')
     fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
     
     while corriendo:
