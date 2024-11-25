@@ -26,7 +26,7 @@ pygame.display.set_caption("Batalla Naval")
 # ---colores---
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-color_base = (0, 200, 0)  # Color verde para todos los botones
+color_base = (100, 149, 237)  # Color verde para todos los botones
 color_texto = BLANCO  # Color blanco para el texto
 
 
