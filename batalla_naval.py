@@ -77,16 +77,17 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
 
                 # ---Verificar si se hace clic en el botón de reiniciar---
                 if 600 <= x <= 750 and 500 <= y <= 550:  
-                    # Aquí reiniciamos el puntaje y otros parámetros sin cambiar la pantalla
+ 
                     puntaje = 0
                     intentos = crear_matriz(tamano_matriz)  # Reiniciar la matriz de intentos
                     aciertos = []  # Reiniciar los aciertos
-                        # Limpiar las coordenadas de las naves para evitar duplicación
-                    matriz = crear_matriz(tamano_matriz)
+                       
+                    matriz = crear_matriz(tamano_matriz) # Limpiar las coordenadas de las naves para evitar duplicación
                     coordenadas_naves.clear() 
                     coordenadas_naves = poner_naves(matriz, naves)  # Reponer las naves
                     agregar_mensaje("Juego reiniciado!")  # Mensaje de confirmación
                     print("Juego reiniciado")
+                    mensajes.clear()
 
                 # ---Verificar si se hace clic en el botón de inicio---
                 elif 600 <= x <= 750 and 300 <= y <= 400:
@@ -172,30 +173,22 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                x, y = pygame.mouse.get_pos()  # Solo se obtiene en este evento
+                x, y = pygame.mouse.get_pos() 
 
-
-                if tipo_pantalla == "inicio":
-                    # Verificamos si se está clicando en el botón de "Nivel"
+                if tipo_pantalla == "inicio":      
                     if 300 <= x <= 500 and 140 <= y <= 200:
-                        mostrar_pantalla("seleccion_nivel", nivel_predeterminado, music_on)
-                    
-                    # Verificamos si se está clicando en el botón de "Jugar"
+                        mostrar_pantalla("seleccion_nivel", nivel_predeterminado, music_on)       
                     elif 300 <= x <= 500 and 220 <= y <= 270:
                         iniciar_juego(10, nivel=nivel_predeterminado)
-                        corriendo = False
-                    
-                    # Verificamos si se está clicando en el botón de "Ver Puntajes"
+                        corriendo = False     
+                  
                     elif 300 <= x <= 500 and 290 <= y <= 340:
-
-                        mostrar_pantalla_puntajes()
-                    
-                    # Verificamos si se está clicando en el botón de "Salir"
+                        mostrar_pantalla_puntajes()     
+                 
                     elif 300 <= x <= 500 and 360 <= y <= 410:
                         pygame.quit()
                         sys.exit()
-
-                    # Verificamos si se está clicando en el botón de "Música"
+               
                     elif 0 <= x <= 200 and 0 <= y <= 50:
                         music_on = not music_on
                         if music_on:
@@ -204,17 +197,17 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
                             pygame.mixer.music.stop()
 
                 elif tipo_pantalla == "seleccion_nivel":
-                    # Verificamos si se está clicando en el botón de "Fácil"
+                
                     if 300 <= x <= 500 and 150 <= y <= 200:
                         iniciar_juego(10, nivel="fácil")
                         corriendo = False
                     
-                    # Verificamos si se está clicando en el botón de "Medio"
+                 
                     elif 300 <= x <= 500 and 220 <= y <= 270:
                         iniciar_juego(20, nivel="medio")
                         corriendo = False
                     
-                    # Verificamos si se está clicando en el botón de "Difícil"
+                  
                     elif 300 <= x <= 500 and 290 <= y <= 340:
                         iniciar_juego(40, nivel="difícil")
                         corriendo = False

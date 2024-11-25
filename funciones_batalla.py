@@ -165,7 +165,7 @@ def mostrar_pantalla_puntajes()->None:
             puntajes.sort(key=lambda x: x[1], reverse=True)
 
 
-                # Crear fondo semitransparente para los puntajes
+            # Crear fondo semitransparente para los puntajes
         fondo_puntajes = pygame.Surface((250, 100))  # Superficie que abarca el área de los puntajes
         fondo_puntajes.set_alpha(180)  # Establecer la transparencia
         fondo_puntajes.fill((100, 150, 230))  # Color de fondo (blanco suave)
@@ -307,7 +307,7 @@ def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_
     alto : El alto del botón.
     mouse_x : La coordenada x del clic del ratón.
     mouse_y : La coordenada y del clic del ratón.
-    Retorno:bool: Devuelve True si el clic del ratón está dentro de los límites del botón, de lo contrario False.
+    Retorno:bool: Devuelve True si el clic del ratón está dentro de los límites del botón, de lo contrario False
     """
     return x < mouse_x < x + ancho and y < mouse_y < y + alto
 
