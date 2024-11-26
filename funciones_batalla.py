@@ -24,11 +24,11 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
     imagen_victoria_cargada = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
     fuente = pygame.font.SysFont('Arial', 23, bold = True)
     input_box = pygame.Rect(250, 300, 200, 40)
-    color = pygame.Color(141, 182, 205)
+    color = pygame.Color(0, 0, 0)
     text = ''
-    texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
+    texto_puntaje = fuente.render(f"Felicidades !!! Ud hizo : {puntaje} puntos!!!", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
-
+    texto_titulo = fuente.render("Ingrese su nombre/nick:", True, (0, 0, 0))
 
     while True:
         for evento in pygame.event.get():
@@ -43,8 +43,8 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
                 else:  
                     text += evento.unicode 
         pantalla.blit(imagen_victoria, (0, 0))
-        pantalla.blit(texto_puntaje, (250, 250)) 
-
+        pantalla.blit(texto_puntaje, (250, 220)) 
+        pantalla.blit(texto_titulo, (250, 270))
         
         pygame.draw.rect(pantalla, color, input_box, 2)
         texto_nombre = fuente.render(text, True, (0, 0, 0))
@@ -128,7 +128,7 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
             y = fila * tamano_celda
 
             # Dibujar el borde negro de cada celda
-            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 2)
+            pygame.draw.rect(pantalla, NEGRO, (x, y, tamano_celda, tamano_celda), 1)
 
             if intentos[fila][columna] == 1:  # Si hay un disparo acertado
                 # Dibujar una X roja
@@ -137,7 +137,7 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
             elif intentos[fila][columna] == -1:  # Si hay un disparo fallido
                 # Dibujar un círculo azul
                 centro = (x + tamano_celda // 2, y + tamano_celda // 2)
-                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 2)
+                pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 0)
 
 
 
