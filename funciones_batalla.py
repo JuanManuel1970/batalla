@@ -65,25 +65,31 @@ def poner_naves(matriz:list, naves:list)->list:
     """
     tamano_matriz = len(matriz)  
     coordenadas_naves = []  
+
     for naves,largo, cantidad in naves:
-        for _ in range(cantidad): 
-            colocada = False  
+        for _ in range(cantidad): #--- pone la nave la cantidad de veces indicada ---
+            colocada = False  # ---bandera para saber si esta puesta o no la nave ---
             while not colocada:
                 orientacion = random.choice(["horizontal", "vertical"])  
-                fila = random.randint(0, tamano_matriz - 1)
-                columna = random.randint(0, tamano_matriz - 1)
-                if orientacion == "horizontal" and columna + largo <= tamano_matriz:
+                fila = random.randint(0, tamano_matriz - 1) # --- selecciona aleatoriamente una fila
+                columna = random.randint(0, tamano_matriz - 1) 
+
+                # --- en horizontal ---
+                if orientacion == "horizontal" and columna + largo <= tamano_matriz: # ---verifica si entra la nave --
                     espacio_libre = True  
                     for i in range(largo):
-                        if matriz[fila][columna + i] != 0: 
+                        if matriz[fila][columna + i] != 0: # --- verifica si algun casillero esta ocupado ---
                             espacio_libre = False
                             break  
-
+                    #---si hay espacio libre coloca la nave ---
                     if espacio_libre:  
                         for i in range(largo):
-                            matriz[fila][columna + i] = 1        
-                        coordenadas_naves.append([(fila, columna + i) for i in range(largo)])
-                        colocada = True  
+                            matriz[fila][columna + i] = 1  #--- Marca las casillas ocupadas por la nave ---   
+                        coordenadas_naves.append([(fila, columna + i) for i in range(largo)]) # --- agrega las coordenadas a la lista y para cada valor de i calcula la columna
+                        colocada = True                                                       #     y genera las posiciones horizontales  ---       
+                      
+                
+                # --- en vertical ---
                 elif orientacion == "vertical" and fila + largo <= tamano_matriz:
                     espacio_libre = True  
                     for i in range(largo):
@@ -93,8 +99,7 @@ def poner_naves(matriz:list, naves:list)->list:
 
                     if espacio_libre: 
                         for i in range(largo):
-                            matriz[fila + i][columna] = 1 
-                       
+                            matriz[fila + i][columna] = 1                        
                         coordenadas_naves.append([(fila + i, columna) for i in range(largo)])
                         colocada = True 
     return coordenadas_naves  
@@ -159,13 +164,13 @@ def mostrar_pantalla_puntajes()->None:
     while corriendo:
         pantalla.blit(fondo, (0, 0))
         mostrar_texto("Puntajes", NEGRO, 300, 30)
-        with open("puntajes.txt", "a+") as archivo:
+        with open("puntajes.txt", "a+") as archivo:  # --- Abre el archivo de puntajes en modo lectura/escritura, creando el archivo si no existe ---  
             archivo.seek(0) 
-            puntajes = [linea.strip().split(",") for linea in archivo.readlines() if linea.strip()]      
-            puntajes.sort(key=lambda x: x[1], reverse=True)
+            puntajes = [linea.strip().split(",") for linea in archivo.readlines() if linea.strip()]     # --- Lee las líneas, elimina espacios en blanco, divide por comas, y filtra líneas vacías ---     
+            puntajes.sort(key=lambda x: x[1], reverse=True) # --- Ordena la lista de puntajes de mayor a menor, segun el segundo elemento  --
 
 
-            # Crear fondo semitransparente para los puntajes
+        # Crear fondo semitransparente para los puntajes
         fondo_puntajes = pygame.Surface((250, 100))  # Superficie que abarca el área de los puntajes
         fondo_puntajes.set_alpha(180)  # Establecer la transparencia
         fondo_puntajes.fill((100, 150, 230))  # Color de fondo (blanco suave)
@@ -214,8 +219,8 @@ def crear_matriz(tamano_matriz:int)->list:
     """
     matriz = [] 
     for _ in range(tamano_matriz):
-        fila = [0] * tamano_matriz 
-        matriz.append(fila) 
+        fila = [0] * tamano_matriz # --- crea una fila de elementos , todos iniciados en 0 ---
+        matriz.append(fila) # ---agrega la fila a la matriz ---
     return matriz
 
 
@@ -334,13 +339,13 @@ def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_base:
                           min(color_base[2] + 20, 255))  
         color_base = color_satinado
 
-    
+    # --- dibuja el fondo del boton ---
     pygame.draw.rect(pantalla, color_borde, (x - 1, y - 1, ancho + 6, alto + 6), border_radius=radio_bordes)
 
-    # Dibujar el rectángulo del botón con bordes redondeados
+    # ---dibuja el rectángulo del botón con bordes redondeados---
     pygame.draw.rect(pantalla, color_base, (x, y, ancho, alto), border_radius=radio_bordes)
 
     fuente = pygame.font.Font(None, 36)  
     texto_superficie = fuente.render(texto, True, color_texto)
-    texto_rect = texto_superficie.get_rect(center=(x + ancho // 2, y + alto // 2))
+    texto_rect = texto_superficie.get_rect(center=(x + ancho // 2, y + alto // 2)) # --- obtiene un rectangilo con el tamanio del texto y centra el texto ----
     pantalla.blit(texto_superficie, texto_rect)
