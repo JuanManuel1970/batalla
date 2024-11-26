@@ -26,8 +26,15 @@ pygame.display.set_caption("Batalla Naval")
 # ---colores---
 BLANCO = (255, 255, 255)
 NEGRO = (0, 0, 0)
-color_base = (100, 149, 237)  # Color verde para todos los botones
-color_texto = BLANCO  # Color blanco para el texto
+
+
+# ---Cargar imagenes---
+fondo = pygame.image.load('imagenes/fondo.jpg')  
+fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
+fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
+fondo_agua=pygame.image.load('imagenes/fondo juego.png') 
+imagen_victoria=pygame.image.load('imagenes/Una_escena_victoriosa_para_un_juego_de_batalla_nav.jpg') 
+imagen_victoria = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
 
 
 

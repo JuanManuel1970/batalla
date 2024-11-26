@@ -65,8 +65,8 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                                 if all(coordenada in aciertos for coordenada in nave):
                                     puntaje += len(nave) * 10  # ---Le suma el puntaje adicional por haber hundido la nave---
                                     sonido_hundido.play()
-                                    agregar_mensaje(f"Nave hundida! +{len(nave)*10} puntos")  # Agregar mensaje de hundimiento
-                                    print(f"Nave hundida! +{len(nave)*10} puntos")
+                                    agregar_mensaje(f"Nave hundida! +{len(nave)*10}")  # Agregar mensaje de hundimiento
+                                    print(f"Nave hundida! +{len(nave)*10}")
                                     coordenadas_naves.remove(nave)  # ---Borra la nave hundida---
                         else:  
                             intentos[fila][columna] = -1
@@ -112,13 +112,13 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
 
         
         pantalla.fill(BLANCO) 
-        mostrar_puntaje(puntaje)  
         dibujar_tablero(matriz, intentos, tamano_matriz)  
+        mostrar_puntaje(puntaje)  
         mostrar_mensajes() 
         # Dibujar los botones con efecto hover
-        dibujar_boton("Salir", 600, 440, 150, 50, (200, 0, 0), NEGRO, hover=hover_salir)  
-        dibujar_boton("Reiniciar", 600, 500, 150, 50, color_base, color_texto, hover=hover_reiniciar)  
-        dibujar_boton("Inicio", 600, 300, 150, 50, color_base, color_texto, hover=hover_inicio)
+        dibujar_boton("Salir", 625, 440, 150, 50, (135, 206, 235), NEGRO, hover=hover_salir)  
+        dibujar_boton("Reiniciar", 625, 500, 150, 50, (135, 206, 235), NEGRO, hover=hover_reiniciar)  
+        dibujar_boton("Inicio", 625, 300, 150, 50, (135, 206, 235), NEGRO, hover=hover_inicio)
  
         pygame.display.flip() 
 
@@ -149,10 +149,10 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
         if tipo_pantalla == "inicio":
             mostrar_texto("Batalla Naval", NEGRO, 300, 50)
  
-            dibujar_boton("Nivel", 300, 140, 200, 60, color_base, color_texto, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
-            dibujar_boton("Jugar", 300, 220, 200, 50, color_base, color_texto, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, color_base, color_texto, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
-            dibujar_boton("Salir", 300, 360, 200, 50, (200, 0, 0), NEGRO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
+            dibujar_boton("Nivel", 300, 140, 200, 60, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
+            dibujar_boton("Jugar", 300, 220, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Salir", 300, 360, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
 
             # Mostrar el botón de música con "On" o "Off"
             texto_musica = "Música: On" if music_on else "Música: Off"
@@ -162,9 +162,9 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             dibujar_boton( texto_musica, 0 ,0, 200, 50, (0, 128, 0), BLANCO,hover=hover_texto_musica  )
 
         elif tipo_pantalla == "seleccion_nivel":
-            dibujar_boton("Fácil", 300, 150, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
-            dibujar_boton("Medio", 300, 220, 200, 50,color_base, BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Difícil", 300, 290, 200, 50, color_base, BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Fácil", 300, 150, 200, 50, (155, 249, 0 ), BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
+            dibujar_boton("Medio", 300, 220, 200, 50,(215, 209, 1 ), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Difícil", 300, 290, 200, 50,(252, 64, 64)    , BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
     
 
         for evento in pygame.event.get():
@@ -220,3 +220,4 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
 mostrar_pantalla("inicio")
 
 mostrar_pantalla("seleccion_nivel")
+

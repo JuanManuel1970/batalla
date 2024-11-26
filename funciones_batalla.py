@@ -21,13 +21,14 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
     Retorna:El nombre ingresado por el jugador.
 
     """
+    imagen_victoria_cargada = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
     fuente = pygame.font.SysFont('Arial', 23, bold = True)
     input_box = pygame.Rect(250, 300, 200, 40)
     color = pygame.Color(141, 182, 205)
     text = ''
-    pantalla.fill((255, 255, 255))  
     texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
+
 
     while True:
         for evento in pygame.event.get():
@@ -41,8 +42,7 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
                     text = text[0:-1]
                 else:  
                     text += evento.unicode 
-
-        pantalla.fill((255, 255, 255)) 
+        pantalla.blit(imagen_victoria, (0, 0))
         pantalla.blit(texto_puntaje, (250, 250)) 
 
         
@@ -115,8 +115,8 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
     tamano_tablero = tamano_celda * tamano_matriz  # Tamaño total del tablero
 
     # Cargar y ajustar la imagen para cubrir el tablero completo
-    imagen_tablero = pygame.image.load("imagenes/fondo3.jpg")
-    imagen_tablero = pygame.transform.scale(imagen_tablero, (tamano_tablero, tamano_tablero))
+    imagen_tablero = pygame.image.load("imagenes/fondo juego.png")
+    imagen_tablero = pygame.transform.scale(imagen_tablero, (800,600))
 
     # Dibujar la imagen del tablero
     pantalla.blit(imagen_tablero, (0, 0))
@@ -154,7 +154,7 @@ def mostrar_pantalla_puntajes()->None:
     """
 
     corriendo = True
-    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo1.jpg'), (ANCHO, ALTO))
+    fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.1.png'), (ANCHO, ALTO))
 
     while corriendo:
         pantalla.blit(fondo, (0, 0))
@@ -188,7 +188,7 @@ def mostrar_pantalla_puntajes()->None:
         # Verificar si el mouse está sobre el botón "Volver"
         hover_volver = 300 <= mouse_x <= 500 and 360 <= mouse_y <= 410
        
-        dibujar_boton("Volver", 300, 360, 200, 50, color_base, color_texto, hover=hover_volver)
+        dibujar_boton("Volver", 300, 360, 200, 50, (2, 229, 205 ), NEGRO, hover=hover_volver)
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -255,7 +255,7 @@ def mostrar_puntaje(puntaje: int) -> None:
     """
     fuente = pygame.font.SysFont("Arial", 25)  
     texto = fuente.render(f"Puntaje: {puntaje:04d}", True, NEGRO) 
-    pantalla.blit(texto, (600, 10)) 
+    pantalla.blit(texto, (625, 10)) 
 
 
 
