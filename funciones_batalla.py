@@ -23,10 +23,10 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
     """
     imagen_victoria_cargada = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
     fuente = pygame.font.SysFont('Arial', 23, bold = True)
-    input_box = pygame.Rect(250, 300, 200, 40)
+    input_box = pygame.Rect(300, 300, 200, 40)
     color = pygame.Color(0, 0, 0)
     text = ''
-    texto_puntaje = fuente.render(f"Felicidades !!! Ud hizo : {puntaje} puntos!!!", True, (0, 0, 0))
+    texto_puntaje = fuente.render(f"Felicidades !! hizo: {puntaje} puntos!!", True, (0, 0, 0))
     pantalla.blit(texto_puntaje, (250, 250))
     texto_titulo = fuente.render("Ingrese su nombre/nick:", True, (0, 0, 0))
 
@@ -117,7 +117,6 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
     Retorno: None.
     """
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
-    tamano_tablero = tamano_celda * tamano_matriz  # Tamaño total del tablero
 
     # Cargar y ajustar la imagen para cubrir el tablero completo
     imagen_tablero = pygame.image.load("imagenes/fondo juego.png")
@@ -137,8 +136,8 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
 
             if intentos[fila][columna] == 1:  # Si hay un disparo acertado
                 # Dibujar una X roja
-                pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)
-                pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)
+                    pygame.draw.line(pantalla, (255, 0, 0), (x, y), (x + tamano_celda, y + tamano_celda), 3)
+                    pygame.draw.line(pantalla, (255, 0, 0), (x + tamano_celda, y), (x, y + tamano_celda), 3)
             elif intentos[fila][columna] == -1:  # Si hay un disparo fallido
                 # Dibujar un círculo azul
                 centro = (x + tamano_celda // 2, y + tamano_celda // 2)
@@ -147,64 +146,74 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
 
 
 
-
-
-def mostrar_pantalla_puntajes()->None:
+def mostrar_pantalla_puntajes(pantalla: pygame.Surface) -> None:
     """
-    Funcion : Muestra una pantalla con los 5 puntajes más altos del juego
-
-    Parámetros: No recibe parámetros
-
-    Retorna: No retorna ningún valor
+    Función que muestra una pantalla con los 3 puntajes más altos del juego.
+    
+    Parámetros:
+    - pantalla (pygame.Surface): La superficie en la que se va a dibujar la pantalla de puntajes.
+    
+    No retorna ningún valor.
     """
-
+    
     corriendo = True
     fondo = pygame.transform.scale(pygame.image.load('imagenes/fondo2.1.png'), (ANCHO, ALTO))
+    puntajes = []
+
+    # Abrir el archivo solo una vez antes del bucle principal
+    with open("puntajes.txt", "r") as archivo:  # Modo 'r' para solo lectura
+        for linea in archivo.readlines():
+            linea = linea.strip()  # Elimina espacios en blanco
+            if linea:  # Solo procesar si la línea no está vacía
+                datos = linea.split(",")  # Dividir la línea por comas
+                if len(datos) == 2:  # Asegurarse de que hay exactamente dos elementos
+                    puntajes.append(datos)  # Agregar a la lista si es válido
+
+    # Ordena la lista de puntajes de mayor a menor según el segundo elemento (puntos)
+    puntajes.sort(key=lambda x: int(x[1]), reverse=True)
 
     while corriendo:
         pantalla.blit(fondo, (0, 0))
-        mostrar_texto("Puntajes", NEGRO, 300, 30)
-        with open("puntajes.txt", "a+") as archivo:  # --- Abre el archivo de puntajes en modo lectura/escritura, creando el archivo si no existe ---  
-            archivo.seek(0) 
-            puntajes = [linea.strip().split(",") for linea in archivo.readlines() if linea.strip()]     # --- Lee las líneas, elimina espacios en blanco, divide por comas, y filtra líneas vacías ---     
-            puntajes.sort(key=lambda x: x[1], reverse=True) # --- Ordena la lista de puntajes de mayor a menor, segun el segundo elemento  --
+        mostrar_texto("Puntajes", NEGRO, 330, 30)
 
-
-        # Crear fondo semitransparente para los puntajes
-        fondo_puntajes = pygame.Surface((250, 100))  # Superficie que abarca el área de los puntajes
-        fondo_puntajes.set_alpha(180)  # Establecer la transparencia
+        # Crear un fondo semitransparente para los puntajes
+        fondo_puntajes = pygame.Surface((265, 100))
+        fondo_puntajes.set_alpha(180)
         fondo_puntajes.fill((100, 150, 230))  # Color de fondo (blanco suave)
+        pantalla.blit(fondo_puntajes, (265, 140))
 
-        # Dibujar el fondo semitransparente
-        pantalla.blit(fondo_puntajes, (300, 140))
-
-
-        for i in range(min(3, len(puntajes))):
-            nombre, puntos = puntajes[i]
-            mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 300, 150 + i * 30)
-
-       
-        for i in range(len(puntajes), 3):
-            mostrar_texto(f"{i+1}. No hay puntajes", NEGRO, 300, 150 + i * 30)
+        # Dibujar los primeros 3 puntajes en la pantalla (si hay 3 disponibles)
+        for i in range(3):  # Cambiado para siempre mostrar 3 líneas
+            if i < len(puntajes):  # Verifica si hay suficiente información en la lista
+                nombre, puntos = puntajes[i]
+                mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 275, 150 + i * 30)
+            else:
+                # Si no hay suficientes puntajes, muestra espacio vacío
+                mostrar_texto(f"{i+1}.      ----------", NEGRO, 275, 150 + i * 30)
 
         # Obtener la posición del mouse
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         # Verificar si el mouse está sobre el botón "Volver"
         hover_volver = 300 <= mouse_x <= 500 and 360 <= mouse_y <= 410
-       
-        dibujar_boton("Volver", 300, 360, 200, 50, (2, 229, 205 ), NEGRO, hover=hover_volver)
 
+        # Dibujar el botón "Volver"
+        dibujar_boton("Volver", 300, 360, 200, 50, (135, 206, 235), NEGRO, hover=hover_volver)
+
+        # Manejar eventos
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                if 300 <= x <= 500 and 360 <= y <= 410:
+                if 300 <= x <= 500 and 360 <= y <= 410:  # Si se hace clic en el botón "Volver"
                     corriendo = False
 
         pygame.display.flip()
+
+
+
 
 
 

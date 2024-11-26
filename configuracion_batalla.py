@@ -33,7 +33,7 @@ fondo = pygame.image.load('imagenes/fondo.jpg')
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
 fondo_agua=pygame.image.load('imagenes/fondo juego.png') 
-imagen_victoria=pygame.image.load('imagenes/Una_escena_victoriosa_para_un_juego_de_batalla_nav.jpg') 
+imagen_victoria=pygame.image.load('imagenes/fondo_victoria.png') 
 imagen_victoria = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
 
 
@@ -42,6 +42,10 @@ imagen_victoria = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
 fondo = pygame.image.load('imagenes/fondo.jpg')  
 fondo = pygame.transform.scale(fondo, (ANCHO, ALTO))
 fondo_nivel = pygame.image.load('imagenes/fondo1.jpg') 
+
+
+
+
 
 
 

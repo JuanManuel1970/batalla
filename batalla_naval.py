@@ -21,7 +21,9 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
     intentos = crear_matriz(tamano_matriz)
     puntaje = 0
     aciertos = []
-    
+    mensajes.clear()
+
+
     # ---Segun el nivel coloca las naves---
     if nivel == "medio":
         naves = [("acorazado", 4, 2), ("crucero", 3, 4), ("destructor", 2, 6), ("submarino", 1, 8)]
@@ -30,7 +32,6 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
     else: 
         naves = [("acorazado", 4, 1), ("crucero", 3, 2), ("destructor", 2, 3), ("submarino", 1, 4)]
 
-    
     coordenadas_naves = poner_naves(matriz, naves)
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
 
@@ -147,13 +148,14 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
         mouse_x, mouse_y = pygame.mouse.get_pos()
         
         if tipo_pantalla == "inicio":
-            mostrar_texto("Batalla Naval", NEGRO, 300, 50)
+            
+            mostrar_texto("Batalla Naval", NEGRO, 330, 50)
             #             texto       coordenadas y tamanio   color de fondo     color    condicion del mouse , si es verdadera
             #                                del boton         del boton         texto             aplica el hover
-            dibujar_boton("Nivel",     300, 140, 200, 60,     (171, 116, 0),      BLANCO, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
-            dibujar_boton("Jugar", 300, 220, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
-            dibujar_boton("Salir", 300, 360, 200, 50, (171, 116, 0), BLANCO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
+            dibujar_boton("Nivel",     300, 140, 200, 60,     (171, 116, 0),      NEGRO, hover=300 <= mouse_x <= 500 and 140 <= mouse_y <= 200)
+            dibujar_boton("Jugar", 300, 220, 200, 50, (171, 116, 0), NEGRO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Ver Puntajes", 300, 290, 200, 50, (171, 116, 0), NEGRO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Salir", 300, 360, 200, 50, (171, 116, 0), NEGRO, hover=300 <= mouse_x <= 500 and 360 <= mouse_y <= 410)
 
            
             texto_musica = "Música: On" if music_on else "Música: Off"
@@ -161,9 +163,9 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             dibujar_boton( texto_musica, 0 ,0, 200, 50, (0, 128, 0), BLANCO,hover=hover_texto_musica  )
 
         elif tipo_pantalla == "seleccion_nivel":
-            dibujar_boton("Fácil", 300, 150, 200, 50, (155, 249, 0 ), BLANCO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
-            dibujar_boton("Medio", 300, 220, 200, 50,(215, 209, 1 ), BLANCO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
-            dibujar_boton("Difícil", 300, 290, 200, 50,(252, 64, 64)    , BLANCO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
+            dibujar_boton("Fácil", 300, 150, 200, 50, (155, 249, 0 ), NEGRO, hover=300 <= mouse_x <= 500 and 150 <= mouse_y <= 200)
+            dibujar_boton("Medio", 300, 220, 200, 50,(215, 209, 1 ), NEGRO, hover=300 <= mouse_x <= 500 and 220 <= mouse_y <= 270)
+            dibujar_boton("Difícil", 300, 290, 200, 50,(252, 64, 64)    , NEGRO, hover=300 <= mouse_x <= 500 and 290 <= mouse_y <= 340)
     
 
         for evento in pygame.event.get():
@@ -182,7 +184,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
                         corriendo = False     
                   
                     elif 300 <= x <= 500 and 290 <= y <= 340:
-                        mostrar_pantalla_puntajes()     
+                        mostrar_pantalla_puntajes(pantalla)     
                  
                     elif 300 <= x <= 500 and 360 <= y <= 410:
                         pygame.quit()
@@ -219,4 +221,3 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
 mostrar_pantalla("inicio")
 
 mostrar_pantalla("seleccion_nivel")
-
