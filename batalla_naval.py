@@ -70,10 +70,12 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                                     agregar_mensaje(f"Nave hundida! +{len(nave)*10}")  # ---agregar mensaje de hundimiento---
                                     print(f"Nave hundida! +{len(nave)*10}")
                                     
-                                    #---coloca un 2 si la nave fue hundida ---
-                                    for coordenada in nave: # ---recorre las coordenadas en la lista nave---
-                                        fila, columna = coordenada  
-                                        intentos[fila][columna] = 2
+                                  
+                                    # Recorrer cada coordenada de la nave
+                                    for coordenada in nave:
+                                        fila = coordenada[0]  # fila de la coordenada
+                                        columna = coordenada[1]  # columna de la coordenada
+                                        intentos[fila][columna] = 2  # Marcamos la celda como 'hundida' con un 2
                                     coordenadas_naves.remove(nave)  # ---borra la nave hundida ---
                         else:  
                             intentos[fila][columna] = -1 # --- marca el intento como fallo ---
