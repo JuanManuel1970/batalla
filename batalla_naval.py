@@ -32,20 +32,19 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
 
     coordenadas_naves = poner_naves(matriz, naves)
     tamano_celda = min(ANCHO, ALTO) // tamano_matriz
-
     corriendo = True
     casillas_clicadas = 0
     total_casillas = tamano_matriz * tamano_matriz #---calcula tamano de la matriz ---
 
     
     while corriendo:
-        for evento in pygame.event.get(): #---recorre los eventos del juego ---
+        for evento in pygame.event.get(): #---recorre los eventos del juego si es QUit , se cierra el juego ---
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()  
             if evento.type == pygame.MOUSEBUTTONDOWN:# --- cuando hace click , obtiene la posicion del mouse
                 x, y = pygame.mouse.get_pos()     
-                fila, columna = y // tamano_celda, x // tamano_celda # ---calcula la celda seleccionada en la matrizcon el mouse---
+                fila, columna = y // tamano_celda, x // tamano_celda # ---calcula cual fue la celda seleccionada en la matriz con el mouse---
                 if 0 <= fila < tamano_matriz and 0 <= columna < tamano_matriz: # ---cheque que las coordenadas entan dentro de los limites de la matriz---
                     if intentos[fila][columna] == 0:  # ---Verifica si la celda se clickeo antes---
                         casillas_clicadas += 1  
@@ -58,8 +57,8 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                             agregar_mensaje(f"Acierto en ({fila}, {columna})") 
                             print(f"Acierto en ({fila}, {columna})")
 
-                            # ---esto verifica si la nave fu hundida---
-                            for nave in coordenadas_naves:
+                            # ---verifica si la nave fu hundida---
+                            for nave in coordenadas_naves: 
                                 nave_hundida = True
                                 for coordenada in nave:
                                     if coordenada not in aciertos:
@@ -68,9 +67,14 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
                                 if nave_hundida:
                                     puntaje += len(nave) * 10  # Le suma el puntaje adicional por haber hundido la nave
                                     sonido_hundido.play()
-                                    agregar_mensaje(f"Nave hundida! +{len(nave)*10}")  # Agregar mensaje de hundimiento
+                                    agregar_mensaje(f"Nave hundida! +{len(nave)*10}")  # ---agregar mensaje de hundimiento---
                                     print(f"Nave hundida! +{len(nave)*10}")
-                                    coordenadas_naves.remove(nave)  # Borra la nave hundida
+                                    
+                                    #---coloca un 2 si la nave fue hundida ---
+                                    for coordenada in nave: # ---recorre las coordenadas en la lista nave---
+                                        fila, columna = coordenada  
+                                        intentos[fila][columna] = 2
+                                    coordenadas_naves.remove(nave)  # ---borra la nave hundida ---
                         else:  
                             intentos[fila][columna] = -1 # --- marca el intento como fallo ---
                             puntaje -= 1 #---Le resta uno si da en el agua---

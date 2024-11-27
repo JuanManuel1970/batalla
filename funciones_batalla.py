@@ -148,6 +148,11 @@ def dibujar_tablero(matriz: list, intentos: list, tamano_matriz: int) -> None:
                 centro = (x + tamano_celda // 2, y + tamano_celda // 2)
                 pygame.draw.circle(pantalla, (0, 0, 255), centro, tamano_celda // 3, 0)
 
+            elif intentos[fila][columna] == 2:  # Si la nave ha sido hundida
+                # ---dibuja circulo rojo ----
+                centro = (x + tamano_celda // 2, y + tamano_celda // 2)
+                pygame.draw.circle(pantalla, (255, 0, 0), centro, tamano_celda // 3, 0)
+
 
 
 
