@@ -31,7 +31,7 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
     texto_titulo = fuente.render("Ingrese su nombre/nick:", True, (0, 0, 0))
 
     while True:
-        for evento in pygame.event.get():
+        for evento in pygame.event.get():# --- recorre los eventos del juego --
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -41,12 +41,12 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
                 elif evento.key == pygame.K_BACKSPACE:  
                     text = text[0:-1]
                 else:  
-                    text += evento.unicode 
+                    text += evento.unicode # --- agrega el caracter de la tecla presionada---
         pantalla.blit(imagen_victoria, (0, 0))
         pantalla.blit(texto_puntaje, (250, 220)) 
         pantalla.blit(texto_titulo, (250, 270))
         
-        pygame.draw.rect(pantalla, color, input_box, 2)
+        pygame.draw.rect(pantalla, color, input_box, 2) #--- dibuja la caja para poner el nombre---
         texto_nombre = fuente.render(text, True, (0, 0, 0))
         pantalla.blit(texto_nombre, (input_box.x + 5, input_box.y + 5))
 
@@ -187,32 +187,28 @@ def mostrar_pantalla_puntajes(pantalla: pygame.Surface) -> None:
         fondo_puntajes.fill((100, 150, 230))  # Color de fondo (blanco suave)
         pantalla.blit(fondo_puntajes, (265, 140))
 
-        # Dibujar los primeros 3 puntajes en la pantalla (si hay 3 disponibles)
-        for i in range(3):  # Cambiado para siempre mostrar 3 líneas
-            if i < len(puntajes):  # Verifica si hay suficiente información en la lista
+        # ---dibujar los primeros 3 puntajes en la pantalla , si es que hay ---
+        for i in range(3):  
+            if i < len(puntajes):  #--- verifica si hay suficiente información en la lista---
                 nombre, puntos = puntajes[i]
                 mostrar_texto(f"{i+1}. {nombre}: {puntos} puntos", NEGRO, 275, 150 + i * 30)
             else:
-                # Si no hay suficientes puntajes, muestra espacio vacío
                 mostrar_texto(f"{i+1}.      ----------", NEGRO, 275, 150 + i * 30)
 
-        # Obtener la posición del mouse
         mouse_x, mouse_y = pygame.mouse.get_pos()
+        hover_volver = 300 <= mouse_x <= 500 and 360 <= mouse_y <= 410  # ---verificar si el mouse está sobre el botón "Volver"---
 
-        # Verificar si el mouse está sobre el botón "Volver"
-        hover_volver = 300 <= mouse_x <= 500 and 360 <= mouse_y <= 410
-
-        # Dibujar el botón "Volver"
+        # --dibujar el botón "Volver"---
         dibujar_boton("Volver", 300, 360, 200, 50, (135, 206, 235), NEGRO, hover=hover_volver)
 
-        # Manejar eventos
+         # ---si se hace clic en el botón "Volver"--- 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 x, y = pygame.mouse.get_pos()
-                if 300 <= x <= 500 and 360 <= y <= 410:  # Si se hace clic en el botón "Volver"
+                if 300 <= x <= 500 and 360 <= y <= 410: 
                     corriendo = False
 
         pygame.display.flip()
@@ -284,8 +280,8 @@ def guardar_puntaje(nombre: str, puntaje: int) -> None:
     Parámetros:El nombre del jugador y el puntaje obtenido por el jugador.
     Retorno: None
     """
-    with open("puntajes.txt", "a") as archivo:
-        archivo.write(f"{nombre},{puntaje}\n")
+    with open("puntajes.txt", "a") as archivo: #---abre el archivo , si esxiste , agrega los datos al final , sino lo crea.
+        archivo.write(f"{nombre},{puntaje}\n") # ---escribe en el archivo los datos con el formato dado por el f string---
 
 
 
@@ -296,8 +292,8 @@ def agregar_mensaje(mensaje: str) -> None:
     Retorno:None
     """
     if len(mensajes) >= 5:
-        mensajes.pop(0)  # Elimina el mensaje más antiguo si ya hay 3
-    mensajes.append(mensaje)  # Agrega el nuevo mensaje
+        mensajes.pop(0)  # ---elimina el mensaje más antiguo si ya hay 5 o mas ---
+    mensajes.append(mensaje)  # ---agrega el nuevo mensaje al final ---
 
 
 def mostrar_mensajes() -> None:
@@ -306,13 +302,13 @@ def mostrar_mensajes() -> None:
     Parámetros: Ninguno
     Retorno: None
     """
-    y_pos = 150  
+    y_pos = 150  # ---se setea donde se va a dibujar el mensaje---
     x_pos = 610  
     fuente_mensajes = pygame.font.SysFont('Arial', 18)  
     for mensaje in mensajes:
-        texto_renderizado = fuente_mensajes.render(mensaje, True, 'blue')  
-        pantalla.blit(texto_renderizado, (x_pos, y_pos)) 
-        y_pos += 20
+        texto_renderizado = fuente_mensajes.render(mensaje, True, 'blue')  #--- convierte cada mensaje en un objeto que puede ser dibujado en la pantalla---
+        pantalla.blit(texto_renderizado, (x_pos, y_pos)) #--- lo dibuja---
+        y_pos += 20 #--- se va sumando pixeles para que el sigu. mje se dibuje debajo del anterior/
 
 
 
@@ -333,8 +329,7 @@ def boton_presionado(x: int, y: int, ancho: int, alto: int, mouse_x: int, mouse_
 
 def dibujar_boton(texto: str, x: int, y: int, ancho: int, alto: int, color_base: tuple, color_texto: tuple, hover: bool = False, color_borde: tuple = (0, 0, 0), radio_bordes: int = 8) -> None:
     """
-    Dibuja un botón redondeado con borde y texto, y opcionalmente cambia de color si el mouse está sobre él.
-    
+    Funcion :Dibuja un botón redondeado con borde y texto, y opcionalmente cambia de color si el mouse está sobre él. 
     Parámetros:
     texto (: Texto a mostrar en el botón.
     x, y : Coordenadas de la esquina superior izquierda del botón.

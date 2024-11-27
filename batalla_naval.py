@@ -60,12 +60,17 @@ def iniciar_juego(tamano_matriz:int, nivel:str="fácil")->None:
 
                             # ---esto verifica si la nave fu hundida---
                             for nave in coordenadas_naves:
-                                if all(coordenada in aciertos for coordenada in nave):
-                                    puntaje += len(nave) * 10  # ---Le suma el puntaje adicional por haber hundido la nave---
+                                nave_hundida = True
+                                for coordenada in nave:
+                                    if coordenada not in aciertos:
+                                        nave_hundida = False
+                                        break  # ---si alguna coordenada no está en aciertos, termina el bucle---
+                                if nave_hundida:
+                                    puntaje += len(nave) * 10  # Le suma el puntaje adicional por haber hundido la nave
                                     sonido_hundido.play()
                                     agregar_mensaje(f"Nave hundida! +{len(nave)*10}")  # Agregar mensaje de hundimiento
                                     print(f"Nave hundida! +{len(nave)*10}")
-                                    coordenadas_naves.remove(nave)  # ---Borra la nave hundida---
+                                    coordenadas_naves.remove(nave)  # Borra la nave hundida
                         else:  
                             intentos[fila][columna] = -1 # --- marca el intento como fallo ---
                             puntaje -= 1 #---Le resta uno si da en el agua---
@@ -140,7 +145,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
             fondo_seleccion_nivel = pygame.transform.scale(pygame.image.load('imagenes/fondo3.jpg'), (ANCHO, ALTO))
             pantalla.blit(fondo_seleccion_nivel, (0, 0))
         else:
-            pantalla.blit(fondo, (0, 0))  # ---Fondo por defecto--- 
+            pantalla.blit(fondo, (0, 0))  # ---dibuja ondo por defecto--- 
 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         
