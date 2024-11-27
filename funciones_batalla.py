@@ -54,54 +54,59 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
         
 
 
-def poner_naves(matriz:list, naves:list)->list:
+def poner_naves(matriz: list, naves: list) -> list:
     """
-    Funcion :Coloca las naves en un tablero representado por una matriz
+    Función: Coloca las naves en un tablero representado por una matriz.
 
-    Parámetros: Recibe la matriz  que representa el tablero de juego y las naves que es una lista de tuplas con los datos (nombre , tamnanio y cantidad)
-          
-    Retorna:Una lista de listas con las coordenadas de las naves colocadas en el tablero
-
+    Parámetros:
+        - matriz: Lista de listas que representa el tablero de juego.
+        - naves: Lista de tuplas con los datos de las naves (nombre, tamaño y cantidad).
+    
+    Retorna:
+        Una lista de listas con las coordenadas de las naves colocadas en el tablero.
     """
     tamano_matriz = len(matriz)  
     coordenadas_naves = []  
 
-    for naves,largo, cantidad in naves:
-        for _ in range(cantidad): #--- pone la nave la cantidad de veces indicada ---
-            colocada = False  # ---bandera para saber si esta puesta o no la nave ---
+    for nave, largo, cantidad in naves:
+        for _ in range(cantidad):  # Pone la nave la cantidad de veces indicada.
+            colocada = False  # Bandera para saber si la nave ha sido colocada.
             while not colocada:
                 orientacion = random.choice(["horizontal", "vertical"])  
-                fila = random.randint(0, tamano_matriz - 1) # --- selecciona aleatoriamente una fila
+                fila = random.randint(0, tamano_matriz - 1)  # Selecciona aleatoriamente una fila.
                 columna = random.randint(0, tamano_matriz - 1) 
 
-                # --- en horizontal ---
-                if orientacion == "horizontal" and columna + largo <= tamano_matriz: # ---verifica si entra la nave --
+                # --- Horizontal ---
+                if orientacion == "horizontal" and columna + largo <= tamano_matriz:  # Verifica si cabe horizontalmente.
                     espacio_libre = True  
                     for i in range(largo):
-                        if matriz[fila][columna + i] != 0: # --- verifica si algun casillero esta ocupado ---
+                        if matriz[fila][columna + i] != 0:  # Verifica si alguna casilla está ocupada.
                             espacio_libre = False
                             break  
-                    #---si hay espacio libre coloca la nave ---
+                    # Si hay espacio libre, coloca la nave.
                     if espacio_libre:  
+                        nave_coordenadas = []  # Crear lista vacía para las coordenadas de esta nave.
                         for i in range(largo):
-                            matriz[fila][columna + i] = 1  #--- Marca las casillas ocupadas por la nave ---   
-                        coordenadas_naves.append([(fila, columna + i) for i in range(largo)]) # --- agrega las coordenadas a la lista y para cada valor de i calcula la columna
-                        colocada = True                                                       #     y genera las posiciones horizontales  ---       
-                      
+                            matriz[fila][columna + i] = 1  # Marca las casillas ocupadas por la nave.
+                            nave_coordenadas.append((fila, columna + i))  # Agrega la coordenada actual.
+                        coordenadas_naves.append(nave_coordenadas)  # Agrega la lista de coordenadas a la lista principal.
+                        colocada = True  
                 
-                # --- en vertical ---
-                elif orientacion == "vertical" and fila + largo <= tamano_matriz:
+                # --- Vertical ---
+                elif orientacion == "vertical" and fila + largo <= tamano_matriz:  # Verifica si cabe verticalmente.
                     espacio_libre = True  
                     for i in range(largo):
                         if matriz[fila + i][columna] != 0: 
                             espacio_libre = False
                             break  
-
                     if espacio_libre: 
+                        nave_coordenadas = []  # Crear lista vacía para las coordenadas de esta nave.
                         for i in range(largo):
-                            matriz[fila + i][columna] = 1                        
-                        coordenadas_naves.append([(fila + i, columna) for i in range(largo)])
-                        colocada = True 
+                            matriz[fila + i][columna] = 1  # Marca las casillas ocupadas por la nave.
+                            nave_coordenadas.append((fila + i, columna))  # Agrega la coordenada actual.
+                        coordenadas_naves.append(nave_coordenadas)  # Agrega la lista de coordenadas a la lista principal.
+                        colocada = True  
+
     return coordenadas_naves  
 
 

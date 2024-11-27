@@ -140,7 +140,7 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
     while corriendo:
                 # --- Cargar fondo diferente para la pantalla de selección de nivel---
         if tipo_pantalla == "seleccion_nivel":
-            fondo_seleccion_nivel = pygame.transform.scale(pygame.image.load('imagenes/fondo2.jpg'), (ANCHO, ALTO))
+            fondo_seleccion_nivel = pygame.transform.scale(pygame.image.load('imagenes/fondo3.jpg'), (ANCHO, ALTO))
             pantalla.blit(fondo_seleccion_nivel, (0, 0))
         else:
             pantalla.blit(fondo, (0, 0))  # ---Fondo por defecto--- 
@@ -221,3 +221,4 @@ def mostrar_pantalla(tipo_pantalla:str, nivel_predeterminado:str="fácil", music
 mostrar_pantalla("inicio")
 
 mostrar_pantalla("seleccion_nivel")
+
