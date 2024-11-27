@@ -21,7 +21,7 @@ def pedir_nombre(puntaje:int, pantalla:pygame.surface)->str:
     Retorna:El nombre ingresado por el jugador.
 
     """
-    imagen_victoria_cargada = pygame.transform.scale(imagen_victoria, (ANCHO, ALTO))
+    
     fuente = pygame.font.SysFont('Arial', 23, bold = True)
     input_box = pygame.Rect(300, 300, 200, 40)
     color = pygame.Color(0, 0, 0)
