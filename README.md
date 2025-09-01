@@ -15,6 +15,9 @@ El desarrollo del juego fue una excelente oportunidad para aplicar y afianzar lo
 - Manejo de eventos con Pygame
 - Trabajo con imágenes y sonidos
 
+
+<img width="805" height="638" alt="image" src="https://github.com/user-attachments/assets/6de38d59-7c3f-469a-b6f7-9cc2ba9078cd" />
+
 ---
 
 ## 🧱 Estructura del Proyecto
